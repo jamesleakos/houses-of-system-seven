@@ -38,7 +38,7 @@ module.exports = {
   },
   plugins: [
     new SourceMapDevToolPlugin({
-      filename: "[file].map"
+      filename: '[file].map',
     }),
   ],
 };

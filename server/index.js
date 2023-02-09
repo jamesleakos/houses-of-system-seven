@@ -7,13 +7,25 @@ const server = http.createServer(app);
 
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 
+const rooms = [];
+
 // events will go here...
 io.on('connection', (socket) => {
   console.log('New User connected');
 
+  socket.join('james room');
+
   socket.on('onTextChange', (data) => {
     // console.log(`Message from client: ${data.text}, whoose id is: ${data.from}`);
-    io.emit('on-text-change', data);
+    io.to('other room').emit('on-text-change', data);
+  });
+
+  socket.on('request-new-room', () => {
+    rooms.push({
+      name: 'Room ' + rooms.length,
+      players: [],
+    });
+    io.emit('rooms-update', rooms);
   });
 
   socket.on('disconnect', () => {
