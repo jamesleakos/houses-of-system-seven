@@ -1,44 +1,41 @@
-// dotenv
-require('dotenv').config();
-
-// dependancies
-const path = require('path');
+// require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-
-// routers
-const testRouter = require('./routers/test.js');
-
-// express app
+const path = require('path');
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
 
-// body interpreters
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const io = require('socket.io')(server, { cors: { origin: '*' } });
 
-// cors
-app.use(cors({ origin: '*' }));
+// events will go here...
+io.on('connection', (socket) => {
+  console.log('New User connected');
 
-// sending static
+  socket.on('onTextChange', (data) => {
+    // console.log(`Message from client: ${data.text}, whoose id is: ${data.from}`);
+    io.emit('on-text-change', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+const PORT = 3000; // process.env.PORT || 80;
+const URL = `http://localhost:${PORT}/`;
+
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-//routes
-app.use('/test', testRouter);
-
 // needed to send the base files
-app.get('/*', function (req, res) {
-  res.sendFile(
-    path.join(__dirname, '../client/dist/index.html'),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
-});
+// app.get('/*', function (req, res) {
+//   res.sendFile(
+//     path.join(__dirname, '../client/dist/index.html'),
+//     function (err) {
+//       if (err) {
+//         res.status(500).send(err);
+//       }
+//     }
+//   );
+// });
 
-// run the app
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`listening on ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Listening on ${URL}`));
