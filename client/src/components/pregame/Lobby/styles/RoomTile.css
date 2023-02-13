@@ -1,0 +1,20 @@
+.room-tile {
+  display: inline-block;
+  height: 200px;
+  width: 120px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 10px;
+  transition: 0.5s ease;
+  vertical-align: top; /* here */
+}
+
+.room-tile:hover {
+  transform: scale(1.05);
+  -webkit-transform: scale(1.05);
+}
+
+.room-tile h3 {
+  padding: 5px;
+  margin: 0;
+}

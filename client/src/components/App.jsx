@@ -2,13 +2,22 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import '../styles.css';
+
 import Pregame from './screens/Pregame.jsx';
-import Lobby from './pregame/Lobby.jsx';
+import Game from './screens/Game.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Pregame />,
+  },
+  {
+    path: '/game/:room_id',
+    element: <Game />,
+    loader: async ({ params }) => {
+      return params.room_id;
+    },
   },
 ]);
 
