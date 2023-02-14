@@ -1,31 +1,31 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+// external
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+const connection_url = 'http://localhost:3000';
 
+// css
 import '../styles.css';
-
+// components
 import Pregame from './screens/Pregame.jsx';
 import Game from './screens/Game.jsx';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Pregame />,
-  },
-  {
-    path: '/game/:room_id',
-    element: <Game />,
-    loader: async ({ params }) => {
-      return params.room_id;
-    },
-  },
-]);
-
 // App
 function App() {
+  const [socket, setSocket] = useState(null);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  useEffect(() => {
+    const s = io(connection_url, { transport: ['websocket'] });
+    setSocket(s);
+  }, []);
+
   return (
     <div className='App'>
-      <RouterProvider router={router} />
+      {gameStarted ? (
+        <Game socket={socket} setGameStarted={setGameStarted} />
+      ) : (
+        <Pregame socket={socket} setGameStarted={setGameStarted} />
+      )}
     </div>
   );
 }

@@ -1,48 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
 
 import EnterNameRoom from '../pregame/EnterNameRoom/EnterNameRoom.jsx';
-
-const connection_url = 'http://localhost:3000'; // process.env.REACT_APP_SOCKET_API;
 
 // // imports
 import Lobby from '../pregame/Lobby/Lobby.jsx';
 import WaitingRoom from '../pregame/WaitingRoom/WaitingRoom.jsx';
 
-const Pregame = () => {
-  const navigate = useNavigate();
-
+const Pregame = ({ socket, setGameStarted }) => {
   const [rooms, setRooms] = useState([]);
-  const [myRoomID, setMyRoomID] = useState(null);
-  const [socket, setSocket] = useState(null);
   const [username, setUsername] = useState('');
+  const [myRoomID, setMyRoomID] = useState(null);
 
   useEffect(() => {
-    const s = io(connection_url, { transport: ['websocket'] });
-
-    s.on('rooms-update', (data) => {
+    // pregame
+    if (!socket) return;
+    console.log(socket);
+    socket.on('rooms-update', (data) => {
       console.log('got rooms-update');
       setRooms(data.filter((r) => !r.started));
     });
 
-    s.on('you-joined-room', (room_id) => {
+    socket.on('you-joined-room', (room_id) => {
       console.log('got you-joined-room');
       setMyRoomID(room_id);
     });
 
-    s.on('you-left-room', (room_id) => {
+    socket.on('you-left-room', (room_id) => {
       console.log('got you-left-room');
       setMyRoomID(null);
     });
 
-    s.on('game-started', (room_id) => {
-      console.log('game started');
-      navigate(`/game/${room_id}`);
+    socket.on('game-started', (room_id) => {
+      setGameStarted(true);
     });
 
-    setSocket(s);
-  }, []);
+    socket.on('next-turn', () => {
+      console.log('next turn recieved in pregame - shouldnt happen');
+    });
+  }, [socket]);
 
   const createRoom = () => {
     socket.emit('request-new-room', {

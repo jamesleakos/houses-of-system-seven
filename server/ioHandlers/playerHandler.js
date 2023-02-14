@@ -1,16 +1,18 @@
 // internal
 const roomMan = require('../managers/roomManager.js');
+const gameMan = require('../managers/gameManager.js');
 
 module.exports = (io, player) => {
   const createNewRoom = (data) => {
     const room = roomMan.createNewRoomAddPlayer(
       data.roomname,
       data.username,
-      player
+      player,
+      io
     );
 
     player.emit('you-joined-room', room.id);
-    io.emit('rooms-update', roomMan.getRooms());
+    io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const joinRoom = (data) => {
@@ -18,14 +20,14 @@ module.exports = (io, player) => {
     roomMan.addPlayerToRoom(room, data.username, player);
 
     player.emit('you-joined-room', room.id);
-    io.emit('rooms-update', roomMan.getRooms());
+    io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const leaveRoom = () => {
     roomMan.removePlayerFromRoom(player);
 
     player.emit('you-left-room');
-    io.emit('rooms-update', roomMan.getRooms());
+    io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const startGame = (data) => {
@@ -34,9 +36,9 @@ module.exports = (io, player) => {
     // make sure this is a player actually in the room!
     if (!room.players.find((p) => p.id === player.id)) return;
 
-    room.started = true;
-    io.to(room.id).emit('game-started', room.id);
-    io.emit('rooms-update', roomMan.getRooms());
+    gameMan.startGame(room, io);
+
+    io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const playerDisconnected = () => {
@@ -44,7 +46,7 @@ module.exports = (io, player) => {
   };
 
   // on join, this will be sent
-  io.emit('rooms-update', roomMan.getRooms());
+  io.emit('rooms-update', roomMan.getOpenRooms());
 
   // and these will be assigned
   player.on('request-new-room', createNewRoom);

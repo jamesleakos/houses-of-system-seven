@@ -1,31 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
-
-const connection_url = 'http://localhost:3000'; // process.env.REACT_APP_SOCKET_API;
 
 // imports
 
-const Pregame = () => {
-  const navigate = useNavigate();
-
-  const [socket, setSocket] = useState(null);
+const Game = ({ socket, setGameStarted }) => {
   const [gameState, setGameState] = useState(null);
 
   useEffect(() => {
-    const s = io(connection_url, { transport: ['websocket'] });
+    if (!socket) return;
 
-    s.on('game-state', (state) => {
+    socket.on('game-state', (state) => {
       console.log('got state-update');
       setGameState(state);
     });
 
-    s.on('room-closed', (room_id) => {
-      navigate(`/`);
+    socket.on('room-closed', (room_id) => {
+      setGameStarted(false);
     });
 
-    setSocket(s);
-  }, []);
+    socket.on('next-turn', () => {
+      console.log('next turn recieved in game');
+    });
+  }, [socket]);
 
   const nextTurn = () => {
     socket.emit('request-next-turn');
@@ -38,4 +33,4 @@ const Pregame = () => {
   );
 };
 
-export default Pregame;
+export default Game;

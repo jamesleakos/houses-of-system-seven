@@ -7,13 +7,11 @@ const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 
-const registerGameHandlers = require('./ioHandlers/gameHandler.js');
-const registerPregameHandlers = require('./ioHandlers/pregameHandler.js');
+const playerHandler = require('./ioHandlers/playerHandler.js');
 
 // register the io handlers
 const onConnection = (socket) => {
-  registerGameHandlers(io, socket);
-  registerPregameHandlers(io, socket);
+  playerHandler(io, socket);
 };
 io.on('connection', onConnection);
 

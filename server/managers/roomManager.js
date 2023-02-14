@@ -7,17 +7,36 @@ const getRoom = (roomID) => {
   return rooms.find((r) => r.id === roomID);
 };
 
-const getRooms = () => {
-  return rooms;
+const getOpenRooms = () => {
+  return rooms.filter((room) => {
+    return !room.started && !room.game;
+  });
 };
 
-const createRoom = (roomname) => {
-  return {
+const createRoom = (roomname, io) => {
+  const newRoom = {
     id: uuidv4(),
     name: roomname,
     players: [],
     started: false,
   };
+
+  // if the room ever becomes empty, it should be deleted
+  rooms.push(newRoom);
+  // let checkEmptyInterval = setInterval(() => {
+  //   let toDelete = true;
+  //   newRoom.players.forEach((player) => {
+  //     if (!!io.sockets.sockets.get(player.id)) toDelete = false;
+  //   });
+  //   if (toDelete) {
+  //     const index = rooms.indexOf(newRoom);
+  //     if (index !== -1) rooms = rooms.splice(index, 1);
+  //     clearInterval(checkEmptyInterval);
+  //     console.log('room deleted');
+  //   }
+  // }, 10000);
+
+  return newRoom;
 };
 
 const addPlayerToRoom = (room, username, playerSocket) => {
@@ -60,15 +79,14 @@ const cleanupEmptyRooms = () => {
 };
 
 // new room on player request, player gets added
-const createNewRoomAddPlayer = (roomname, username, playerSocket) => {
-  const room = createRoom(roomname);
+const createNewRoomAddPlayer = (roomname, username, playerSocket, io) => {
+  const room = createRoom(roomname, io);
   addPlayerToRoom(room, username, playerSocket);
-  rooms.push(room);
   return room;
 };
 
 module.exports.getRoom = getRoom;
-module.exports.getRooms = getRooms;
+module.exports.getOpenRooms = getOpenRooms;
 module.exports.addPlayerToRoom = addPlayerToRoom;
 module.exports.createNewRoomAddPlayer = createNewRoomAddPlayer;
 module.exports.removePlayerFromTrackedRoom = removePlayerFromTrackedRoom;
