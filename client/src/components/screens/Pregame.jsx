@@ -33,23 +33,19 @@ const Pregame = ({ socket, setGameStarted }) => {
     socket.on('game-started', (room_id) => {
       setGameStarted(true);
     });
-
-    socket.on('next-turn', () => {
-      console.log('next turn recieved in pregame - shouldnt happen');
-    });
   }, [socket]);
 
   const createRoom = () => {
     socket.emit('request-new-room', {
       roomname: 'New Room',
-      username: username,
+      username: username
     });
   };
 
   const joinRoom = (room_id) => {
     socket.emit('request-join-room', {
       room_id,
-      username,
+      username
     });
   };
 
@@ -59,7 +55,7 @@ const Pregame = ({ socket, setGameStarted }) => {
 
   const startGame = () => {
     socket.emit('request-start-game', {
-      room_id: myRoomID,
+      room_id: myRoomID
     });
   };
 
@@ -68,11 +64,7 @@ const Pregame = ({ socket, setGameStarted }) => {
       {username === '' ? (
         <EnterNameRoom setUsername={setUsername} />
       ) : !!rooms.find((r) => r.id === myRoomID) ? (
-        <WaitingRoom
-          room={rooms.find((r) => r.id === myRoomID)}
-          leaveRoom={leaveRoom}
-          startGame={startGame}
-        />
+        <WaitingRoom room={rooms.find((r) => r.id === myRoomID)} leaveRoom={leaveRoom} startGame={startGame} />
       ) : (
         <Lobby rooms={rooms} createRoom={createRoom} joinRoom={joinRoom} />
       )}
