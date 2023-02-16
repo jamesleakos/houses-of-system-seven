@@ -1,0 +1,4 @@
+.game-screen {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+}

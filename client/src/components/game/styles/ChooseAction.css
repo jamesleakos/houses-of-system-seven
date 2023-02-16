@@ -1,0 +1,53 @@
+.open-action, .closed-action {
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 400px;
+  padding: 10px;
+  margin: 5px;
+  position: relative;
+  transition: 0.5s ease;
+}
+.open-action:hover {
+  outline: none;
+  border-color: #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+  transform: scale(1.01);
+  -webkit-transform: scale(1.01);
+}
+.closed-action {
+  background-color: lightgray;
+}
+
+.action-area .header {
+  height: 25px;
+}
+.action-area .header h3 {
+  display: inline-block;
+  position: absolute;
+  left: 10px;
+  font-size: 1rem;
+}
+
+.action-area .header p {
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  font-size: .8rem;
+}
+
+.action-area .action-info {
+  font-size: .8rem;
+  margin: 3px;
+}
+
+.action-area .player-info {
+  font-size: .7rem;
+  font-style: italic;
+  margin: 3px;
+}
+
+.action-area .block-info {
+  font-size: .7rem;
+  color: grey;
+  margin: 3px;
+}

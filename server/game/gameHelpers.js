@@ -1,3 +1,5 @@
+const constants = require('./constants.js');
+
 const buildGamePlayers = (roomPlayers) => {
   return roomPlayers.map((roomPlayer, index) => {
     return {
@@ -33,8 +35,38 @@ const buildIDToPlayer = (gamePlayers) => {
   return out;
 };
 
+const buildDeck = () => {
+  let deck = [];
+  let cardNames = constants.CardNames.values();
+  for (let card of cardNames) {
+    for (let i = 0; i < 3; i++) {
+      deck.push(card);
+    }
+  }
+  deck = shuffle(deck);
+  return deck;
+};
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
 module.exports = {
   buildGamePlayers: buildGamePlayers,
   buildIDToPlayer: buildIDToPlayer,
+  buildDeck: buildDeck,
   buildGamePlayersToSendSafe: buildGamePlayersToSendSafe
 };

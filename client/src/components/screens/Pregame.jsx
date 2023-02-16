@@ -14,19 +14,16 @@ const Pregame = ({ socket, setGameStarted }) => {
   useEffect(() => {
     // pregame
     if (!socket) return;
-    console.log(socket);
+
     socket.on('rooms-update', (data) => {
-      console.log('got rooms-update');
       setRooms(data.filter((r) => !r.started));
     });
 
     socket.on('you-joined-room', (room_id) => {
-      console.log('got you-joined-room');
       setMyRoomID(room_id);
     });
 
     socket.on('you-left-room', (room_id) => {
-      console.log('got you-left-room');
       setMyRoomID(null);
     });
 
