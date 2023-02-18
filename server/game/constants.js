@@ -11,43 +11,43 @@ const CardNames = {
 
 const Actions = {
   income: {
-    influence: 'all',
+    delegate: 'all',
     blockableBy: [],
     isChallengeable: false,
     moneyDelta: 1
   },
   foreign_aid: {
-    influence: 'all',
+    delegate: 'all',
     blockableBy: [CardNames.DUKE],
     isChallengeable: false,
     moneyDelta: 2
   },
   coup: {
-    influence: 'all',
+    delegate: 'all',
     blockableBy: [],
     isChallengeable: false,
     moneyDelta: -7
   },
   tax: {
-    influence: CardNames.DUKE,
+    delegate: CardNames.DUKE,
     blockableBy: [],
     isChallengeable: true,
     moneyDelta: 3
   },
   assassinate: {
-    influence: CardNames.ASSASSIN,
+    delegate: CardNames.ASSASSIN,
     blockableBy: [CardNames.CONTESSA],
     isChallengeable: true,
     moneyDelta: -3
   },
   exchange: {
-    influence: CardNames.AMBASSADOR,
+    delegate: CardNames.AMBASSADOR,
     blockableBy: [],
     isChallengeable: true,
     moneyDelta: 0
   },
   steal: {
-    influence: CardNames.CAPTAIN,
+    delegate: CardNames.CAPTAIN,
     blockableBy: [CardNames.AMBASSADOR, CardNames.AMBASSADOR],
     isChallengeable: true,
     moneyDelta: 2 // EDGE CASE: if victim only has 1 or 0 coins
@@ -56,18 +56,28 @@ const Actions = {
 
 const CounterActions = {
   block_foreign_aid: {
-    influences: [CardNames.DUKE]
+    delegates: [CardNames.DUKE]
   },
   block_steal: {
-    influences: [CardNames.AMBASSADOR, CardNames.CAPTAIN]
+    delegates: [CardNames.AMBASSADOR, CardNames.CAPTAIN]
   },
   block_assassinate: {
-    influences: [CardNames.CONTESSA]
+    delegates: [CardNames.CONTESSA]
   }
+};
+
+const StatusOfPlay = {
+  CHOOSING_ACTION: 'choosing-action',
+  REQUESTING_CHALLENGES: 'requesting-challenges',
+  REQUESTING_BLOCK_CHALLENGES: 'requesting-block-challenges',
+  REQUESTING_BLOCKS: 'requesting-blocks',
+  DISCARDING_DELEGATE: 'discarding-delegate',
+  EXCHANGING_DELEGATES: 'exhanging-delegates'
 };
 
 module.exports = {
   CardNames: CardNames,
   Actions: Actions,
-  CounterActions: CounterActions
+  CounterActions: CounterActions,
+  StatusOfPlay: StatusOfPlay
 };

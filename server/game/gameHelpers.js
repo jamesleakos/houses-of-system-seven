@@ -9,7 +9,7 @@ const buildGamePlayers = (roomPlayers) => {
       delegates: [],
       money: 0,
       isAlive: true,
-      canAct: false
+      voted: false
     };
   });
 };
@@ -21,8 +21,7 @@ const buildGamePlayersToSendSafe = (gamePlayers) => {
       name: gamePlayer.name,
       delegates_count: gamePlayer.delegates.length,
       money: gamePlayer.money,
-      isAlive: gamePlayer.isAlive,
-      canAct: gamePlayer.canAct
+      isAlive: gamePlayer.isAlive
     };
   });
 };
@@ -68,5 +67,6 @@ module.exports = {
   buildGamePlayers: buildGamePlayers,
   buildIDToPlayer: buildIDToPlayer,
   buildDeck: buildDeck,
+  shuffle: shuffle,
   buildGamePlayersToSendSafe: buildGamePlayersToSendSafe
 };

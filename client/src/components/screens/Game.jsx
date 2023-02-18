@@ -67,7 +67,7 @@ const Game = ({ socket, setGameStarted }) => {
     }
     // else
     console.log('emitting');
-    socket.emit('do-action', {
+    socket.emit('player-action', {
       action: action
     });
   };
