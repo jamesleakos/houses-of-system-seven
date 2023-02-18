@@ -239,6 +239,18 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player !== this.currentDiscardingPlayer) return;
+
+    const index = player.delegates.indexOf(data.delegate);
+    if (index === -1) {
+      this.deck.push(player.delegates.pop());
+      helpers.shuffle(this.deck);
+    } else {
+      player.delegates.splice(index, 1);
+      this.deck.push(data.delegate);
+      helpers.shuffle(this.deck);
+    }
+
+    this.nextStep();
   }
 
   playerExchangesDelegate(playerSocket, data) {
@@ -247,6 +259,8 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player !== this.currentPlayer) return;
+
+    // should probably save the sent delegates somewhere so that we know the player isn't cheating
   }
 
   onPlayerDisconnected(playerSocket) {
@@ -263,6 +277,8 @@ class Game {
 
     // send to other players that they've left
   }
+
+  // main helpers
 
   nextStep() {
     const actionObj = constants.Actions(this.currentAction.action);
@@ -296,8 +312,6 @@ class Game {
     // otherwise
     this.nextTurn();
   }
-
-  // helpers
 
   executeAction(action, player, target) {
     if (!action || !player) return;
@@ -399,6 +413,8 @@ class Game {
     const player = this.players.find((p) => p.socket_id === playerSocket.id);
     this.sendToPlayer('player-state', player, playerSocket.id);
   }
+
+  // other helpers
 
   logAction(action, player, target) {
     let log = player.name + ' used ' + action;
