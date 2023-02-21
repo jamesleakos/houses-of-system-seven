@@ -28,6 +28,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
     takeAction(action);
   };
 
+  const formatImageLink = (link) => {
+    return `linear-gradient( rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55) ), url('${link}')`;
+  };
+
   return (
     <div className="choose-action-screen">
       <div className="action-area">
@@ -40,8 +44,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             takeAction('income');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coins_pd7OITMyg.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coins_pd7OITMyg.png')
           }}
         >
           <div className="header">
@@ -57,8 +60,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             handleClick('foriegn_aid');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')
           }}
         >
           <div className="header">
@@ -74,8 +76,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             handleClick('coup');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coupball_XTHjEFn6Y.png')
           }}
         >
           <div className="header">
@@ -93,8 +94,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             handleClick('tax');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_space_bars_9GnkSjJ0m.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_space_bars_9GnkSjJ0m.png')
           }}
         >
           <div className="header">
@@ -115,8 +115,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             handleClick('assassinate');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/assassination_6Amkl7pf2.png')
           }}
         >
           <div className="header">
@@ -138,15 +137,14 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             handleClick('steal');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')
           }}
         >
           <div className="header">
             <h3>Steal</h3>
-            <p></p>
+            <p className="action-cost">+2 Gold</p>
           </div>
-          <p className="action-info">Steal 2 Gold from target player</p>
+          <p className="action-info">Steal 2 Gold from target player - if they have it</p>
           <p className="player-info">
             {myPlayer.delegates.includes('captain')
               ? 'You have the captain, you would win a challenge.'
@@ -161,8 +159,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
             handleClick('exchange');
           }}
           style={{
-            backgroundImage:
-              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/spaceship_oLNUN7gI4.png')"
+            backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/spaceship_oLNUN7gI4.png')
           }}
         >
           <div className="header">

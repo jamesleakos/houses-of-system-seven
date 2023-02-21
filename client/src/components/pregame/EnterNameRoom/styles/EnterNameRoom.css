@@ -1,0 +1,61 @@
+.enter-name-room {
+  padding-top: 50px;
+  text-align: center;
+  background-color: black;
+  height: 100vh;
+  background-image: url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/council_2_-xtCInoWU.png');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.enter-name-room .game-title-small {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.enter-name-room .game-title-large {
+  color: white;
+  font-size: 5rem;
+}
+
+.enter-name-room .enter-name-title {
+  color: white;
+  font-style: italic;
+}
+
+.enter-name-room .input-area {
+  display: inline-block;
+  margin: 50px auto;
+  text-align: center;
+  width: 500px;
+  /* background-color: rgba(255, 255, 255, 0.244); */
+  padding: 50px;
+}
+
+.enter-name-room .text-field {
+  display: inline-block;
+  width: 300px;
+  height: 30px;
+  margin: 10px;
+}
+
+.enter-name-room .submit-button {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  transition: 0.5s ease;
+}
+
+.enter-name-room .submit-button:hover {
+  outline: none;
+  border-color: white;
+  box-shadow: 0 0 10px white;
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+
+}
+

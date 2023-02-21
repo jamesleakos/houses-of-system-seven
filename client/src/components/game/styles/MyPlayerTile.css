@@ -1,4 +1,4 @@
-.game-player-tile {
+.my-player-tile {
   border: 1px solid white;
   border-radius: 5px;
   width: 300px;
@@ -9,18 +9,10 @@
   transition: 0.5s ease;
 }
 
-.current-player {
-  outline: none;
-  border-color: white;
-  box-shadow: 0 0 10px white;
-  transform: scale(1.02);
-  -webkit-transform: scale(1.02);
-}
-
-.game-player-tile .player-name {
+.my-player-tile .player-name {
   font-size: .9rem;
 }
 
-.game-player-tile p {
+.my-player-tile p {
   font-size: .8rem;
 }

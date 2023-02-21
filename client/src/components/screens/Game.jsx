@@ -84,12 +84,20 @@ const Game = ({ socket, setGameStarted }) => {
     }
   };
 
+  const playerTile = (player, index) => {
+    if (myPlayer.index === index) {
+      return <MyPlayerTile key={index + ''} player={myPlayer} isCurrentPlayer={index === gameState.currentPlayerIndex} />;
+    } else {
+      return <PlayerTile key={index + ''} player={player} isCurrentPlayer={index === gameState.currentPlayerIndex} />;
+    }
+  };
+
   return (
-    <div className="game-screen" style={{ padding: '10px' }}>
+    <div className="game-screen">
       <div className="player-list" style={{ gridColumn: 1 }}>
         <h2 className="players-title">Players</h2>
         {gameState.players.map((player, index) => {
-          return <PlayerTile key={player.index + ''} player={player} isCurrentPlayer={index === gameState.currentPlayerIndex} />;
+          return playerTile(player, index);
         })}
       </div>
 

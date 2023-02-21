@@ -70,6 +70,6 @@
 
 .action-area .block-info {
   font-size: .7rem;
-  color: grey;
+  /* color: grey; */
   margin: 3px;
 }
