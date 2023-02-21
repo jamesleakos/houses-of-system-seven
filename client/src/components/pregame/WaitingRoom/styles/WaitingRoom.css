@@ -1,6 +1,26 @@
 
-
 .waiting-room {
-  padding: 10px;
+  padding-top: 50px;
+  text-align: center;
+  height: 100vh;
+  background-image: url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/council_2_-xtCInoWU.png');  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
+.waiting-room-title {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.waiting-room .player-list {
+  margin-bottom: 20px;
+}
+
+.waiting-room .hoss-button {
+  margin-left: 15px;
+}
+
 

@@ -9,7 +9,8 @@ const buildGamePlayers = (roomPlayers) => {
       delegates: [],
       money: 0,
       isAlive: true,
-      voted: false
+      voted: false,
+      active: true
     };
   });
 };
@@ -21,7 +22,8 @@ const buildGamePlayersToSendSafe = (gamePlayers) => {
       name: gamePlayer.name,
       delegates_count: gamePlayer.delegates.length,
       money: gamePlayer.money,
-      isAlive: gamePlayer.isAlive
+      isAlive: gamePlayer.isAlive,
+      active: gamePlayer.active
     };
   });
 };

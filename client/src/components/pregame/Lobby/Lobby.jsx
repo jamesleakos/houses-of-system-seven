@@ -6,14 +6,12 @@ import './styles/Lobby.css';
 
 const Lobby = ({ rooms, createRoom, joinRoom }) => {
   return (
-    <div>
-      <input
-        className='new-room-button'
-        type='button'
-        value='New Game'
-        onClick={createRoom}
-      />
-      <div className='rooms-area'>
+    <div className="lobby">
+      <h1 className="lobby-title">Open Rooms</h1>
+      <div className="new-room-button hoss-button" onClick={createRoom}>
+        NEW GAME
+      </div>
+      <div className="rooms-area">
         {rooms.map((room) => {
           return <RoomTile key={room.id} room={room} joinRoom={joinRoom} />;
         })}

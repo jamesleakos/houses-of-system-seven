@@ -1,50 +1,86 @@
 // external
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 // internal
 import './styles/ChooseAction.css';
 
 const ChooseAction = ({ myPlayer, takeAction }) => {
+  const getActionStatus = () => {
+    return {
+      income: myPlayer.money < 10,
+      foriegn_aid: myPlayer.money < 10,
+      coup: myPlayer.money >= 7,
+      tax: myPlayer.money < 10,
+      assassinate: myPlayer.money < 10 && myPlayer.money >= 3,
+      steal: myPlayer.money < 10,
+      exchange: myPlayer.money < 10
+    };
+  };
+
+  const [actionsOpen, setActionsOpen] = useState(getActionStatus());
+
+  useEffect(() => {
+    setActionsOpen(getActionStatus());
+  }, [myPlayer]);
+
+  const handleClick = (action) => {
+    if (!actionsOpen[action]) return;
+    takeAction(action);
+  };
+
   return (
     <div className="choose-action-screen">
       <div className="action-area">
         <h3>Universal Actions</h3>
         {/* Income */}
         <div
-          className={'action ' + (myPlayer.money < 10 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.income ? 'open-action' : 'closed-action')}
           onClick={() => {
+            if (!actionsOpen.income) return;
             takeAction('income');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coins_pd7OITMyg.png')"
           }}
         >
           <div className="header">
             <h3>Take Income</h3>
-            <p>+1 Gold</p>
+            <p className="action-cost">+1 Gold</p>
           </div>
           <p className="block-info">Unblockable</p>
         </div>
         {/* Foriegn Aid */}
         <div
-          className={'action ' + (myPlayer.money < 10 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.foriegn_aid ? 'open-action' : 'closed-action')}
           onClick={() => {
-            takeAction('foriegn_aid');
+            handleClick('foriegn_aid');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')"
           }}
         >
           <div className="header">
             <h3>Foriegn Aid</h3>
-            <p>+2 Gold</p>
+            <p className="action-cost">+2 Gold</p>
           </div>
           <p className="block-info">Blockable By the Duke</p>
         </div>
         {/* Coup */}
         <div
-          className={'action ' + (myPlayer.money >= 7 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.coup ? 'open-action' : 'closed-action')}
           onClick={() => {
-            takeAction('coup');
+            handleClick('coup');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')"
           }}
         >
           <div className="header">
             <h3>Coup</h3>
-            <p>-7 Gold</p>
+            <p className="action-cost">-7 Gold</p>
           </div>
           <p className="action-info">Pick a player and destroy a delegate</p>
           <p className="block-info">Unblockable</p>
@@ -52,14 +88,18 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
         <h3>Character Actions</h3>
         {/* Tax */}
         <div
-          className={'action ' + (myPlayer.money < 10 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.tax ? 'open-action' : 'closed-action')}
           onClick={() => {
-            takeAction('tax');
+            handleClick('tax');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_space_bars_9GnkSjJ0m.png')"
           }}
         >
           <div className="header">
             <h3>Tax</h3>
-            <p>+3 Gold</p>
+            <p className="action-cost">+3 Gold</p>
           </div>
           <p className="player-info">
             {myPlayer.delegates.includes('duke')
@@ -70,14 +110,18 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
         </div>
         {/* Assassinate */}
         <div
-          className={'action ' + (myPlayer.money < 10 && myPlayer.money >= 3 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.assassinate ? 'open-action' : 'closed-action')}
           onClick={() => {
-            takeAction('assassinate');
+            handleClick('assassinate');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')"
           }}
         >
           <div className="header">
             <h3>Assassinate</h3>
-            <p>-3 Gold</p>
+            <p className="action-cost">-3 Gold</p>
           </div>
           <p className="action-info">Pick a player and destroy a delegate</p>
           <p className="player-info">
@@ -89,9 +133,13 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
         </div>
         {/* Steal */}
         <div
-          className={'action ' + (myPlayer.money < 10 && myPlayer.money >= 3 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.steal ? 'open-action' : 'closed-action')}
           onClick={() => {
-            takeAction('steal');
+            handleClick('steal');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')"
           }}
         >
           <div className="header">
@@ -108,9 +156,13 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
         </div>
         {/* Exchange Roles */}
         <div
-          className={'action ' + (myPlayer.money < 10 ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.exchange ? 'open-action' : 'closed-action')}
           onClick={() => {
-            takeAction('exchange');
+            handleClick('exchange');
+          }}
+          style={{
+            backgroundImage:
+              "linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/spaceship_oLNUN7gI4.png')"
           }}
         >
           <div className="header">

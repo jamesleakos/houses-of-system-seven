@@ -1,5 +1,21 @@
+.lobby {
+  padding-top: 50px;
+  text-align: center;
+  height: 100vh;
+  background-image: url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/council_2_-xtCInoWU.png');  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.lobby-title {
+  color: white;
+  font-size: 2.5rem;
+}
+
 .new-room-button {
-  display: block;
+  height: 20px;
+  width: 100px;
   margin: 10px;
 }
 

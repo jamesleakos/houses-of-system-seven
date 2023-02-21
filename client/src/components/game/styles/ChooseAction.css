@@ -1,21 +1,43 @@
-.open-action, .closed-action {
-  border: 1px solid black;
+.choose-action-screen .action {
   border-radius: 5px;
   width: 400px;
   padding: 10px;
   margin: 5px;
+  color: white;
   position: relative;
-  transition: 0.5s ease;
+  transition: 0.2s ease;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
 .open-action:hover {
   outline: none;
-  border-color: #9ecaed;
-  box-shadow: 0 0 10px #9ecaed;
+  cursor: pointer;
+  border-color: white;
+  box-shadow: 0 0 50px white;
   transform: scale(1.01);
   -webkit-transform: scale(1.01);
 }
+.open-action {
+  border: 1px solid white;
+  color: white;
+  outline: none;
+  box-shadow: 0 0 10px white;
+
+  background-color: rgba(0, 0, 0, 0.5);
+}
 .closed-action {
-  background-color: lightgray;
+  border: 1px solid red;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: red;
+}
+.closed-action .action-cost {
+  color: red;
+}
+.closed-action .header {
+  color: red;
 }
 
 .action-area .header {

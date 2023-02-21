@@ -24,6 +24,7 @@ class Game {
     this.currentDiscardingPlayer = null;
     this.deck = helpers.buildDeck();
     this.votes = 0;
+    this.sentDelegates = [];
   }
 
   // starting game
@@ -62,6 +63,11 @@ class Game {
     }
     // else
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+
+    // skip past inactive or eliminated players
+    while (!this.players[this.currentPlayerIndex].active || !this.players[this.currentPlayerIndex].isAlive) {
+      this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    }
     this.currentPlayer = this.players[this.currentPlayerIndex];
     this.currentStatusOfPlay = constants.StatusOfPlay.CHOOSING_ACTION;
     this.currentStatusToText = 'Waiting for ' + this.currentPlayer.name + ' to make a play';
@@ -200,7 +206,7 @@ class Game {
 
   playerBlockChallengeResponse(playerSocket, data) {
     // player input checks
-    if (this.currentStatusOfPlay !== constants.StatusOfPlay.REQUESTING_BLOCKS) return;
+    if (this.currentStatusOfPlay !== constants.StatusOfPlay.REQUESTING_BLOCK_CHALLENGES) return;
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player === this.currentAction.blocker) return;
@@ -261,21 +267,68 @@ class Game {
     if (!player || player !== this.currentPlayer) return;
 
     // should probably save the sent delegates somewhere so that we know the player isn't cheating
+    const delegateNum = player.delegates.length;
+    const picked = data.delegates;
+    const pool = [...player.delegates, ...this.sentDelegates];
+    player.delegates = [];
+    for (let i = 0; i < delegateNum; i++) {
+      const index = pool.indexOf(picked[i]);
+      if (index !== -1) {
+        player.delegates.push(pool[index]);
+        pool.splice(index, 1);
+      }
+      // if the client sent bad info, just pick one
+      else {
+        player.delegates.push(pool.pop());
+      }
+    }
+    for (let remaining of pool) {
+      this.deck.push(remaining);
+    }
+    this.sentDelegates = [];
   }
 
   onPlayerDisconnected(playerSocket) {
     let player = this.IDToPlayer[playerSocket.id];
     if (!player) return;
 
+    this.sendToRoom('player-disconnected', player.index);
+
     // check them off as inactive
+    player.active = false;
     // if they're the last one to respond to a block or challenge, set them to pass
+    if (
+      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCKS ||
+      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_CHALLENGES ||
+      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCK_CHALLENGES
+    ) {
+      player.voted = true;
+      if (this.haveAllPlayersVoted()) {
+        this.resetPlayerVotes();
+        this.nextStep();
+      }
+      return;
+    }
     // if they're discarding, autodiscard one for them
-    // if they're exchanging, pick two and continue
-    // etc.
+    if (this.currentStatusOfPlay === constants.StatusOfPlay.DISCARDING_DELEGATE && player === this.currentDiscardingPlayer) {
+      this.deck.push(player.delegates.pop());
+      helpers.shuffle(this.deck);
+      this.nextStep();
+      return;
+    }
+    // if they're exchanging, just keep the ones they have
+    if (this.currentStatusOfPlay === constants.StatusOfPlay.EXCHANGING_DELEGATES && player === this.currentDiscardingPlayer) {
+      this.deck = [...this.deck, ...this.sentDelegates];
+      helpers.shuffle(this.deck);
+      this.nextStep();
+      return;
+    }
 
-    // then fix some logic to have them get skipped from now on
-
-    // send to other players that they've left
+    // if it's their turn, just move on
+    if (player === this.currentPlayer) {
+      this.nextTurn();
+      return;
+    }
   }
 
   // main helpers
@@ -343,9 +396,9 @@ class Game {
         // next turn will be called in remove delegate or on response from the target
         break;
       case 'exchange':
-        const twoCards = [this.deck.pop(), this.deck.pop()];
+        this.sentDelegates = [this.deck.pop(), this.deck.pop()];
         this.currentStatusOfPlay = constants.StatusOfPlay.EXCHANGING_DELEGATES;
-        this.sendToPlayer('exchange-delegate-choices', twoCards);
+        this.sendToPlayer('exchange-delegate-choices', this.sentDelegates);
         break;
       case 'steal':
         if (!target) return;

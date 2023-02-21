@@ -87,6 +87,7 @@ const Game = ({ socket, setGameStarted }) => {
   return (
     <div className="game-screen" style={{ padding: '10px' }}>
       <div className="player-list" style={{ gridColumn: 1 }}>
+        <h2 className="players-title">Players</h2>
         {gameState.players.map((player, index) => {
           return <PlayerTile key={player.index + ''} player={player} isCurrentPlayer={index === gameState.currentPlayerIndex} />;
         })}

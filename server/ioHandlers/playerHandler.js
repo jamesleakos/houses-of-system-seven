@@ -4,12 +4,7 @@ const gameMan = require('../managers/gameManager.js');
 
 module.exports = (io, player) => {
   const createNewRoom = (data) => {
-    const room = roomMan.createNewRoomAddPlayer(
-      data.roomname,
-      data.username,
-      player,
-      io
-    );
+    const room = roomMan.createNewRoomAddPlayer(data.roomname, data.username, player, io);
 
     player.emit('you-joined-room', room.id);
     io.emit('rooms-update', roomMan.getOpenRooms());
@@ -24,7 +19,7 @@ module.exports = (io, player) => {
   };
 
   const leaveRoom = () => {
-    roomMan.removePlayerFromRoom(player);
+    roomMan.removePlayerFromTrackedRoom(player);
 
     player.emit('you-left-room');
     io.emit('rooms-update', roomMan.getOpenRooms());

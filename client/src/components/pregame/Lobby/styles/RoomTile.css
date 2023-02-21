@@ -5,8 +5,9 @@
   border: 1px solid black;
   border-radius: 5px;
   margin: 10px;
+  background-color: rgba(255, 255, 255, 0.3);
   transition: 0.5s ease;
-  vertical-align: top; /* here */
+  vertical-align: top; 
 }
 
 .room-tile:hover {

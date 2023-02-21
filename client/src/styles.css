@@ -7,4 +7,26 @@ body {
   margin: 0;
   /* font-family: var(--body-text-font);
   background-color: var(--background-color-light-main); */
+  font-family: 'Exo 2', sans-serif;
+}
+
+.hoss-button {
+  display: inline-block;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid grey;
+  border-radius: 2px;
+  background-color: white;
+  cursor: pointer;
+  
+  transition: 0.5s ease;
+}
+
+.hoss-button:hover {
+  outline: none;
+  border-color: white;
+  box-shadow: 0 0 10px white;
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+
 }
