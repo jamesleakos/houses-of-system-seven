@@ -14,7 +14,9 @@ const EnterNameRoom = ({ setUsername }) => {
   return (
     <div className="enter-name-room">
       <h1 className="game-title-small">THE NOBLE HOUSES OF</h1>
+      <br />
       <h1 className="game-title-large">SYSTEM SEVEN</h1>
+      <br />
       <div className="input-area">
         <h2 className="enter-name-title">Enter Player Name</h2>
         <input

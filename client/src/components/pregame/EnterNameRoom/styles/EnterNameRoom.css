@@ -5,7 +5,7 @@
   height: 100vh;
   background-image: url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/council_2_-xtCInoWU.png');
   background-attachment: fixed;
-  background-position: center;
+  background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -13,11 +13,14 @@
 .enter-name-room .game-title-small {
   color: white;
   font-size: 1.5rem;
+  display: inline-block;
 }
 
 .enter-name-room .game-title-large {
   color: white;
   font-size: 5rem;
+  display: inline-block;
+  border-bottom: 1px solid white;
 }
 
 .enter-name-room .enter-name-title {
@@ -29,7 +32,7 @@
   display: inline-block;
   margin: 50px auto;
   text-align: center;
-  width: 500px;
+  width: 370px;
   /* background-color: rgba(255, 255, 255, 0.244); */
   padding: 50px;
 }
