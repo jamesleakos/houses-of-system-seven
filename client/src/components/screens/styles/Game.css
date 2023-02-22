@@ -9,6 +9,10 @@
   padding: 30px;
 }
 
+.game-screen .player-list {
+  border-right: 1px solid white;
+}
+
 .players-title {
   color: white;
 }

@@ -89,6 +89,7 @@ class Game {
     const game = this;
     playerSockets.map((playerSocket) => {
       playerSocket.on('player-action', function (data) {
+        console.log('player action');
         game.playerTakesAction(playerSocket, data);
       });
       playerSocket.on('player-challenge', function (data) {
@@ -114,13 +115,17 @@ class Game {
 
   playerTakesAction(playerSocket, data) {
     // check to make sure player is allowed to act
-    if (this.StatusOfPlay !== constants.StatusOfPlay.CHOOSING_ACTION) return;
+    if (this.currentStatusOfPlay !== constants.StatusOfPlay.CHOOSING_ACTION) return;
     let player = this.IDToPlayer[playerSocket.id];
     if (player !== this.currentPlayer) return;
 
+    console.log('passed intro checks');
+
     // record the action data
     const action = data.action;
-    const target = players[data.targetIndex];
+    const target = !!data.targetIndex ? this.gamePlayers[data.targetIndex] : null;
+
+    console.log(action);
 
     this.currentAction = {
       player: player,
@@ -334,14 +339,15 @@ class Game {
   // main helpers
 
   nextStep() {
-    const actionObj = constants.Actions(this.currentAction.action);
+    const actionObj = constants.Actions[this.currentAction.action];
 
     // first, we check if we've done our challenges
-    if (actionObj.isChallengable && !this.currentAction.challengesComplete) {
+    if (actionObj.isChallengeable && !this.currentAction.challengesComplete) {
+      console.log('in challenges');
       this.sendToRoom('challenge-request', {
-        playerIndex: player.index,
-        targetIndex: target.index || null,
-        action: action
+        playerIndex: this.currentAction.player.index,
+        targetIndex: !!this.currentAction.target ? this.currentAction.target.index : null,
+        action: this.currentAction.action
       });
       return;
     }
@@ -349,9 +355,9 @@ class Game {
     // then, we check if we've done our blocks
     if (actionObj.blockableBy.length > 0 && !this.currentAction.blocksComplete) {
       this.sendToRoom('block-request', {
-        playerIndex: player.index,
-        targetIndex: target.index || null,
-        action: action
+        playerIndex: this.currentAction.player.index,
+        targetIndex: !!this.currentAction.target ? this.currentAction.target.index : null,
+        action: this.currentAction.action
       });
       return;
     }
@@ -370,47 +376,10 @@ class Game {
     if (!action || !player) return;
     this.currentAction.executed = true;
 
-    switch (action) {
-      case 'income':
-        player.money += 1;
-        this.nextTurn();
-        break;
-      case 'foreign_aid':
-        player.money += 2;
-        this.nextTurn();
-        break;
-      case 'coup':
-        if (!target) return;
+    const actionObj = constants.Actions[action];
+    if (!actionObj) throw Error('no action found');
 
-        this.removeDelegate(target);
-        // next turn will be called in remove delegate or on response from the target
-        break;
-      case 'tax':
-        player.money += 3;
-        this.nextTurn();
-        break;
-      case 'assassinate':
-        if (!target) return;
-
-        this.removeDelegate(target);
-        // next turn will be called in remove delegate or on response from the target
-        break;
-      case 'exchange':
-        this.sentDelegates = [this.deck.pop(), this.deck.pop()];
-        this.currentStatusOfPlay = constants.StatusOfPlay.EXCHANGING_DELEGATES;
-        this.sendToPlayer('exchange-delegate-choices', this.sentDelegates);
-        break;
-      case 'steal':
-        if (!target) return;
-
-        const stolen = Math.min(target.money, 2);
-        target.money -= stolen;
-        player.money += stolen;
-        this.nextTurn();
-        break;
-      default:
-        throw Error('action not found');
-    }
+    actionObj.execute(this, player, target);
   }
 
   resolveChallenge(player, action) {
@@ -472,7 +441,7 @@ class Game {
   logAction(action, player, target) {
     let log = player.name + ' used ' + action;
     if (target) log = log + ' on ' + target.name;
-    sendToRoom('log', log);
+    this.sendToRoom('log', log);
   }
 
   haveAllPlayersVoted() {

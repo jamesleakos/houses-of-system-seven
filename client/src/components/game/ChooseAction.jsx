@@ -8,7 +8,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
   const getActionStatus = () => {
     return {
       income: myPlayer.money < 10,
-      foriegn_aid: myPlayer.money < 10,
+      foreign_aid: myPlayer.money < 10,
       coup: myPlayer.money >= 7,
       tax: myPlayer.money < 10,
       assassinate: myPlayer.money < 10 && myPlayer.money >= 3,
@@ -24,7 +24,9 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
   }, [myPlayer]);
 
   const handleClick = (action) => {
+    console.log('handle lcick');
     if (!actionsOpen[action]) return;
+    console.log('passed open');
     takeAction(action);
   };
 
@@ -53,18 +55,18 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           </div>
           <p className="block-info">Unblockable</p>
         </div>
-        {/* Foriegn Aid */}
+        {/* Foreign Aid */}
         <div
-          className={'action ' + (actionsOpen.foriegn_aid ? 'open-action' : 'closed-action')}
+          className={'action ' + (actionsOpen.foreign_aid ? 'open-action' : 'closed-action')}
           onClick={() => {
-            handleClick('foriegn_aid');
+            handleClick('foreign_aid');
           }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')
           }}
         >
           <div className="header">
-            <h3>Foriegn Aid</h3>
+            <h3>Foreign Aid</h3>
             <p className="action-cost">+2 Gold</p>
           </div>
           <p className="block-info">Blockable By the Duke</p>

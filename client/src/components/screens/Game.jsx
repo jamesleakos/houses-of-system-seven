@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // imports
 import PlayerTile from '../game/playerTile.jsx';
+import MyPlayerTile from '../game/MyPlayerTile.jsx';
 import ChooseAction from '../game/ChooseAction.jsx';
 import BlockAction from '../game/BlockAction.jsx';
 // css

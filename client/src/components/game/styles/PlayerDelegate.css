@@ -1,5 +1,11 @@
 .player-delegate {
+  display: inline-block;
+  text-align: center;
+  margin: 5px;
+  width: 130px;
+  height: 150px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  border: 1px solid white;
 }

@@ -6,17 +6,17 @@ import constants from '../../game_helpers/constants.js';
 
 const PlayerDelegate = ({ delegate }) => {
   const formatImageLink = (link) => {
-    return `linear-gradient( rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55) ), url('${link}')`;
+    return `linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) ), url('${link}')`;
   };
 
   return (
     <div
       className="player-delegate"
       style={{
-        backgroundImage: formatImageLink(constants.Delgates[delegate].url)
+        backgroundImage: formatImageLink(constants.Delegates[delegate].url)
       }}
     >
-      <h3>{constants.Delgates[delegate].display}</h3>
+      <h3>{constants.Delegates[delegate].display}</h3>
     </div>
   );
 };

@@ -14,43 +14,87 @@ const Actions = {
     delegate: 'all',
     blockableBy: [],
     isChallengeable: false,
-    moneyDelta: 1
+    execute: function (game, player, target) {
+      player.money += 1;
+      game.nextTurn();
+    }
   },
   foreign_aid: {
     delegate: 'all',
     blockableBy: [CardNames.DUKE],
     isChallengeable: false,
-    moneyDelta: 2
+    execute: function (game, player, target) {
+      player.money += 2;
+      game.nextTurn();
+    }
   },
   coup: {
     delegate: 'all',
     blockableBy: [],
     isChallengeable: false,
-    moneyDelta: -7
+    execute: function (game, player, target) {
+      if (!target) {
+        console.log('No target supplied');
+        return;
+      }
+      if (player.money < 7) {
+        console.log('Not enough money');
+        return;
+      }
+      player.money -= 7;
+      game.removeDelegate(target);
+    }
   },
   tax: {
     delegate: CardNames.DUKE,
     blockableBy: [],
     isChallengeable: true,
-    moneyDelta: 3
+    execute: function (game, player, target) {
+      player.money += 3;
+      game.nextTurn();
+    }
   },
   assassinate: {
     delegate: CardNames.ASSASSIN,
     blockableBy: [CardNames.CONTESSA],
     isChallengeable: true,
-    moneyDelta: -3
+    execute: function (game, player, target) {
+      if (!target) {
+        console.log('No target supplied');
+        return;
+      }
+      if (player.money < 3) {
+        console.log('Not enough money');
+        return;
+      }
+      player.money -= 3;
+      game.removeDelegate(target);
+    }
   },
   exchange: {
     delegate: CardNames.AMBASSADOR,
     blockableBy: [],
     isChallengeable: true,
-    moneyDelta: 0
+    execute: function (game, player, target) {
+      game.sentDelegates = [game.deck.pop(), game.deck.pop()];
+      game.currentStatusOfPlay = StatusOfPlay.EXCHANGING_DELEGATES;
+      game.sendToPlayer('exchange-delegate-choices', game.sentDelegates, player.socket_id);
+    }
   },
   steal: {
     delegate: CardNames.CAPTAIN,
     blockableBy: [CardNames.AMBASSADOR, CardNames.AMBASSADOR],
     isChallengeable: true,
-    moneyDelta: 2 // EDGE CASE: if victim only has 1 or 0 coins
+    execute: function (game, player, target) {
+      if (!target) {
+        console.log('No target supplied');
+        return;
+      }
+      const stolen = Math.min(target.money, 2);
+      target.money -= stolen;
+      player.money += stolen;
+      game.nextTurn();
+    }
   }
 };
 

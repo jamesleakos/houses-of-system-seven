@@ -11,7 +11,7 @@ const MyPlayerTile = ({ player, isCurrentPlayer }) => {
       <p>{'Money: ' + player.money}</p>
       <div className="player-delegates">
         {player.delegates.map((delegate, index) => {
-          <PlayerDelegate key={index} delegate={delegate} />;
+          return <PlayerDelegate key={index} delegate={delegate} />;
         })}
       </div>
     </div>
