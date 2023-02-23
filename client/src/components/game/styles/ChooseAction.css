@@ -1,6 +1,6 @@
 .choose-action-screen .action {
   border-radius: 5px;
-  width: 400px;
+  min-width: 250px;
   padding: 10px;
   margin: 5px;
   color: white;

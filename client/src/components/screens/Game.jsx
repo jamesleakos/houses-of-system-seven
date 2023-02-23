@@ -95,16 +95,24 @@ const Game = ({ socket, setGameStarted }) => {
 
   return (
     <div className="game-screen">
-      <div className="player-list" style={{ gridColumn: 1 }}>
-        <h2 className="players-title">Players</h2>
-        {gameState.players.map((player, index) => {
-          return playerTile(player, index);
-        })}
+      <div className="status-bar">
+        <h3 className="status-of-play">{'STATUS: ' + gameState.currentStatusOfPlay}</h3>
       </div>
+      <div className="game-area">
+        <div className="player-list" style={{ gridColumn: 1 }}>
+          <h3 className="players-title">Players</h3>
+          {gameState.players.map((player, index) => {
+            return playerTile(player, index);
+          })}
+        </div>
 
-      <div className="play-area" style={{ gridColumn: 2 }}>
-        <h3 className="status-of-play">{gameState.currentStatusOfPlay}</h3>
-        {gameAreaContent()}
+        <div className="play-area" style={{ gridColumn: 2 }}>
+          {gameAreaContent()}
+        </div>
+        <div className="log-area" style={{ gridColumn: 3 }}>
+          <h3>Log</h3>
+          <p>Some text</p>
+        </div>
       </div>
     </div>
   );

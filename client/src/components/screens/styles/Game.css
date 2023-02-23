@@ -1,18 +1,42 @@
 .game-screen {
-  display: grid;
-  grid-template-columns: 350px 1fr;
   height: 100vh;
   background-image: url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/council_2_-xtCInoWU.png');  
+  background-attachment: fixed;
   background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
   padding: 30px;
+  color: white;
 }
 
-.game-screen .player-list {
+.status-bar {
+  border-bottom: 1px solid white;
+  margin-bottom: 15px;
+}
+
+.status-of-play {
+  font-size: 1.5rem;
+}
+
+.game-area {
+  display: grid;
+  grid-template-columns: 320px 2fr 1fr;
+}
+
+.game-area .player-list {
+  padding-right: 10px;
   border-right: 1px solid white;
 }
 
 .players-title {
   color: white;
+}
+
+.play-area {
+  padding: 0 10px;
+  border-right: 1px solid white;
+}
+
+.log-area {
+  padding: 0 10px;
 }
