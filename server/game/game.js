@@ -346,7 +346,7 @@ class Game {
       console.log('in challenges');
       this.sendToRoom('challenge-request', {
         playerIndex: this.currentAction.player.index,
-        targetIndex: !!this.currentAction.target ? this.currentAction.target.index : null,
+        targetIndex: !!this.currentAction.target ? this.currentAction.target.index : -1,
         action: this.currentAction.action
       });
       return;

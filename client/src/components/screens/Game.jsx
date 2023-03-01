@@ -23,9 +23,14 @@ const Game = ({ socket, setGameStarted }) => {
     canAct: false
   });
   const [uiState, setUIState] = useState('');
-  const [currentAction, setCurrentAction] = useState({
+  const [myCurrentAction, setMyCurrentAction] = useState({
     action: '',
     target: 0
+  });
+  const [challengeAction, setChallengeAction] = useState({
+    action: '',
+    targetIndex: 0,
+    playerIndex: 0
   });
 
   useEffect(() => {
@@ -47,6 +52,11 @@ const Game = ({ socket, setGameStarted }) => {
       setGameState(data);
     });
 
+    socket.on('challenge-request', (data) => {
+      setChallengeAction(data);
+      setUIState('challenge-action');
+    });
+
     socket.emit('request-gamestate');
   }, [socket]);
 
@@ -60,7 +70,7 @@ const Game = ({ socket, setGameStarted }) => {
 
   const takeAction = (action) => {
     if (['coup', 'assassinate', 'steal'].includes(action)) {
-      setCurrentAction({
+      setMyCurrentAction({
         action: action
       });
       setUIState('choose-target');
@@ -78,6 +88,8 @@ const Game = ({ socket, setGameStarted }) => {
       return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} />;
     } else if (uiState === 'block-action') {
       return <BlockAction myPlayer={myPlayer} />;
+    } else if (uiState === 'challenge-action') {
+      return <ChallengeAction myPlayer={myPlayer} challengeAction={challengeAction} />;
     } else if (uiState === 'choose-target') {
       return <div>Choose a player to target</div>;
     } else {
