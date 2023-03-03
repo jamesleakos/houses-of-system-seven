@@ -145,29 +145,42 @@ class Game {
 
   playerChallengeResponse(playerSocket, data) {
     // player input checks
+    console.log('this.currentStatusOfPlay: ', this.currentStatusOfPlay);
+    console.log('constants.StatusOfPlay.REQUESTING_CHALLENGES: ', constants.StatusOfPlay.REQUESTING_CHALLENGES);
     if (this.currentStatusOfPlay !== constants.StatusOfPlay.REQUESTING_CHALLENGES) return;
+
     let player = this.IDToPlayer[playerSocket.id];
+
+    console.log('player === this.currentPlayer', player === this.currentPlayer);
+
     // only let opponents in the room submit
     if (!player || player === this.currentPlayer) return;
 
+    console.log('got resposne');
+
     // onto challenge response logic
-    if (data.isChallenging) {
+    if (data.amChallenging) {
+      console.log('player is challenging');
+
       this.currentAction.challengesComplete = true;
       this.resetPlayerVotes();
       const challengeResult = this.resolveChallenge(this.currentAction.player, this.currentAction.action);
       if (challengeResult.wasSuccessful) {
-        sendToRoom('challenge-result', {
+        console.log('challenge was successful');
+        this.sendToRoom('challenge-result', {
           wasSuccessful: true
         });
         this.removeDelegate(this.currentPlayer);
       } else {
-        sendToRoom('challenge-result', {
+        console.log('challenge was not successful');
+        this.sendToRoom('challenge-result', {
           wasSuccessful: false,
           role: challengeResult.role
         });
         this.removeDelegate(player);
       }
     } else {
+      console.log('player is not challenging');
       player.voted = true;
       if (this.haveAllPlayersVoted()) {
         this.currentAction.challengesComplete = true;
@@ -343,7 +356,7 @@ class Game {
 
     // first, we check if we've done our challenges
     if (actionObj.isChallengeable && !this.currentAction.challengesComplete) {
-      console.log('in challenges');
+      this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_CHALLENGES;
       this.sendToRoom('challenge-request', {
         playerIndex: this.currentAction.player.index,
         targetIndex: !!this.currentAction.target ? this.currentAction.target.index : -1,
@@ -354,6 +367,7 @@ class Game {
 
     // then, we check if we've done our blocks
     if (actionObj.blockableBy.length > 0 && !this.currentAction.blocksComplete) {
+      this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_BLOCKS;
       this.sendToRoom('block-request', {
         playerIndex: this.currentAction.player.index,
         targetIndex: !!this.currentAction.target ? this.currentAction.target.index : null,
@@ -415,13 +429,16 @@ class Game {
   }
 
   removeDelegate(player) {
-    if (player.delegates > 1) {
+    console.log('removing delegate from ' + player.name);
+    console.log(player.delegates);
+    if (player.delegates.length > 1) {
       this.currentStatusOfPlay = constants.StatusOfPlay.DISCARDING_DELEGATE;
       this.currentDiscardingPlayer = player;
       this.sendToRoom('status-update', 'Waiting on ' + player.name + ' to discard an influence');
       this.sendToPlayer(player.socket_id, 'choose-influence');
       // no next turn, need them to choose a card to discard
     } else {
+      console.log('killing player ' + player.name);
       player.isAlive = false;
       this.deck.push(player.delegates.pop());
       helpers.shuffle(this.deck);
@@ -445,14 +462,14 @@ class Game {
   }
 
   haveAllPlayersVoted() {
-    for (let player of gamePlayers) {
+    for (let player of this.players) {
       if (!player.voted && player.isAlive) return false;
     }
     return true;
   }
 
   resetPlayerVotes() {
-    for (let player of gamePlayers) {
+    for (let player of this.players) {
       player.voted = false;
     }
   }

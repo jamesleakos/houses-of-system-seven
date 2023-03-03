@@ -5,6 +5,7 @@ import PlayerTile from '../game/playerTile.jsx';
 import MyPlayerTile from '../game/MyPlayerTile.jsx';
 import ChooseAction from '../game/ChooseAction.jsx';
 import BlockAction from '../game/BlockAction.jsx';
+import ChallengeAction from '../game/ChallengeAction.jsx';
 // css
 import './styles/Game.css';
 
@@ -83,13 +84,20 @@ const Game = ({ socket, setGameStarted }) => {
     });
   };
 
+  const challengeResponse = (response) => {
+    console.log('should be emitting');
+    socket.emit('player-challenge', {
+      amChallenging: response
+    });
+  };
+
   const gameAreaContent = () => {
     if (uiState === 'choose-action') {
       return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} />;
     } else if (uiState === 'block-action') {
       return <BlockAction myPlayer={myPlayer} />;
     } else if (uiState === 'challenge-action') {
-      return <ChallengeAction myPlayer={myPlayer} challengeAction={challengeAction} />;
+      return <ChallengeAction myPlayer={myPlayer} challengeAction={challengeAction} challengeResponse={challengeResponse} />;
     } else if (uiState === 'choose-target') {
       return <div>Choose a player to target</div>;
     } else {

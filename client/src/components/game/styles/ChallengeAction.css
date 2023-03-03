@@ -1,0 +1,37 @@
+.challenge-button-area {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr 20px;
+}
+
+.challenge-button {
+  display: block;
+  height: 300px;
+  width: 95%;
+  margin: 10px;
+  padding: 3px;
+  border: 1px solid grey;
+  border-radius: 2px;
+  background-color: grey;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.5s ease;
+  color: white;
+  box-shadow: 0 0 10px white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.challenge-button h3 {
+  margin-top: 10px;
+  font-size: 1.5rem;
+}
+
+.challenge-button:hover {
+  outline: none;
+  border-color: white;
+  box-shadow: 0 0 50px white;
+  transform: scale(1.01);
+  -webkit-transform: scale(1.01);
+}

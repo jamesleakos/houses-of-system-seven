@@ -3,7 +3,7 @@ import React from 'react';
 // internal
 import './styles/ChallengeAction.css';
 
-const ChallengeAction = ({ myPlayer, challengeAction }) => {
+const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
   const parseAction = (ca) => {
     const addendum = '';
     if (ca.targetIndex > -1) {
@@ -21,8 +21,22 @@ const ChallengeAction = ({ myPlayer, challengeAction }) => {
         ) : (
           <div>
             <div>{parseAction(challengeAction)}</div>
-            <div className="hoss-button">Challenge</div>
-            <div className="hoss-button">Pass</div>
+            <div className="challenge-button-area">
+              <div
+                className="challenge-button challenge hoss-button"
+                style={{ gridColumn: 1, backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coupball_XTHjEFn6Y.png')" }}
+                onClick={() => challengeResponse(true)}
+              >
+                <h3>Challenge</h3>
+              </div>
+              <div
+                className="challenge-button pass hoss-button"
+                style={{ gridColumn: 3, backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')" }}
+                onClick={() => challengeResponse(false)}
+              >
+                <h3>Pass</h3>
+              </div>
+            </div>
           </div>
         )
       }
