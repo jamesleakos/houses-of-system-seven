@@ -83,7 +83,7 @@ const Actions = {
   },
   steal: {
     delegate: CardNames.CAPTAIN,
-    blockableBy: [CardNames.AMBASSADOR, CardNames.AMBASSADOR],
+    blockableBy: [CardNames.CAPTAIN, CardNames.AMBASSADOR],
     isChallengeable: true,
     execute: function (game, player, target) {
       if (!target) {

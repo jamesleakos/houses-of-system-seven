@@ -19,23 +19,29 @@ class Game {
       blockerDelegate: null,
       challengesComplete: false,
       blocksComplete: false,
-      executed: false
+      executed: false,
+      canceled: false
     };
     this.currentDiscardingPlayer = null;
     this.deck = helpers.buildDeck();
     this.votes = 0;
     this.sentDelegates = [];
+    this.gameOver = false;
   }
 
   // starting game
   startNewGame() {
+    console.log('starting new game');
+    this.gameOver = false;
     this.currentPlayer = this.players[0];
     this.currentPlayer.canAct = true;
     this.currentPlayerIndex = 0;
     for (let player of this.players) {
       player.money = 2;
-      player.delegates.push(this.deck.pop());
-      player.delegates.push(this.deck.pop());
+      player.delegates = [this.deck.pop(), this.deck.pop()];
+      player.isAlive = true;
+      player.voted = false;
+      player.active = true;
     }
     this.currentStatusToText = 'Waiting for ' + this.currentPlayer.name + ' to make a play';
 
@@ -46,15 +52,17 @@ class Game {
     return this.players.filter((p) => p.isAlive).length < 2;
   }
   endGame() {
-    console.log('GAME OVER');
+    this.gameOver = true;
+    this.sendToRoom('end-game', {
+      winner: this.players.filter((p) => p.isAlive)[0]?.name,
+      players: helpers.buildGamePlayersToSendSafe(this.players)
+    });
   }
 
   // turn flow
   startTurn() {
-    this.sendToRoom('start-turn', this.getGameState());
-    for (let player of this.players) {
-      this.sendToPlayer('player-state', player, player.socket_id);
-    }
+    this.currentStatusOfPlay = constants.StatusOfPlay.CHOOSING_ACTION;
+    this.sendGameStateToPlayers('start-turn');
   }
   nextTurn() {
     if (this.checkForEndOfGame()) {
@@ -75,13 +83,24 @@ class Game {
     this.startTurn();
   }
 
-  // game state and game logic
-  getGameState() {
-    return {
-      currentPlayerIndex: this.currentPlayerIndex,
-      players: helpers.buildGamePlayersToSendSafe(this.players),
-      currentStatusOfPlay: this.currentStatusToText
-    };
+  // sending game state
+  sendGameStateToPlayers(message) {
+    for (let player of this.players) {
+      this.sendGameStateToPlayer(player, message);
+    }
+  }
+  sendGameStateToPlayer(player, message) {
+    this.sendToPlayer(
+      message,
+      {
+        player: player,
+        currentPlayerIndex: this.currentPlayerIndex,
+        players: helpers.buildGamePlayersToSendSafe(this.players),
+        currentStatusOfPlay: this.currentStatusOfPlay,
+        currentStatusToText: this.currentStatusToText
+      },
+      player.socket_id
+    );
   }
 
   // respond to player
@@ -102,13 +121,17 @@ class Game {
         game.playerBlockChallengeResponse(playerSocket, data);
       });
       playerSocket.on('request-gamestate', function (data) {
-        game.sendGameStateToPlayer(playerSocket, data);
+        game.playerRequestedGameState(playerSocket, data);
       });
       playerSocket.on('delegate-discard', function (data) {
         game.playerDiscardsDelegate(playerSocket, data);
       });
       playerSocket.on('delegate-exchange', function (data) {
         game.playerExchangesDelegate(playerSocket, data);
+      });
+      playerSocket.on('request-new-game', function (data) {
+        if (!game.gameOver) return;
+        game.startNewGame();
       });
     });
   }
@@ -171,6 +194,7 @@ class Game {
           wasSuccessful: true
         });
         this.removeDelegate(this.currentPlayer);
+        this.currentAction.canceled = true;
       } else {
         console.log('challenge was not successful');
         this.sendToRoom('challenge-result', {
@@ -182,11 +206,13 @@ class Game {
     } else {
       console.log('player is not challenging');
       player.voted = true;
-      if (this.haveAllPlayersVoted()) {
+      if (this.haveAllPlayersVoted(this.currentAction.player)) {
+        console.log('all players have voted');
         this.currentAction.challengesComplete = true;
         this.resetPlayerVotes();
         this.nextStep();
       } else {
+        console.log('not all players have voted yet');
         this.sendToRoom('player-voted', player.index);
       }
     }
@@ -212,7 +238,7 @@ class Game {
       });
     } else {
       player.voted = true;
-      if (this.haveAllPlayersVoted()) {
+      if (this.haveAllPlayersVoted(this.currentAction.player)) {
         this.currentAction.blocksComplete = true;
         this.resetPlayerVotes();
         this.nextStep();
@@ -248,7 +274,7 @@ class Game {
       }
     } else {
       player.voted = true;
-      if (this.haveAllPlayersVoted()) {
+      if (this.haveAllPlayersVoted(this.currentAction.blocker)) {
         this.resetPlayerVotes();
         this.nextStep();
       } else {
@@ -273,6 +299,7 @@ class Game {
       this.deck.push(data.delegate);
       helpers.shuffle(this.deck);
     }
+    this.sendToPlayer('player-state', player, player.socket_id);
 
     this.nextStep();
   }
@@ -317,11 +344,18 @@ class Game {
     // if they're the last one to respond to a block or challenge, set them to pass
     if (
       this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCKS ||
-      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_CHALLENGES ||
-      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCK_CHALLENGES
+      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_CHALLENGES
     ) {
       player.voted = true;
-      if (this.haveAllPlayersVoted()) {
+      if (this.haveAllPlayersVoted(this.currentAction.player)) {
+        this.resetPlayerVotes();
+        this.nextStep();
+      }
+      return;
+    }
+    if (this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCK_CHALLENGES) {
+      player.voted = true;
+      if (this.haveAllPlayersVoted(this.currentAction.blocker)) {
         this.resetPlayerVotes();
         this.nextStep();
       }
@@ -353,20 +387,28 @@ class Game {
 
   nextStep() {
     const actionObj = constants.Actions[this.currentAction.action];
+    if (this.currentAction.canceled) {
+      this.nextTurn();
+      return;
+    }
 
     // first, we check if we've done our challenges
     if (actionObj.isChallengeable && !this.currentAction.challengesComplete) {
       this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_CHALLENGES;
+      this.currentStatusToText = 'Requesting Challenges';
       this.sendToRoom('challenge-request', {
         playerIndex: this.currentAction.player.index,
         targetIndex: !!this.currentAction.target ? this.currentAction.target.index : -1,
-        action: this.currentAction.action
+        action: this.currentAction.action,
+        currentStatusToText: this.currentStatusToText
       });
       return;
     }
 
     // then, we check if we've done our blocks
     if (actionObj.blockableBy.length > 0 && !this.currentAction.blocksComplete) {
+      console.log('requesting blocks');
+      this.currentStatusToText = 'Requesting Blocks';
       this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_BLOCKS;
       this.sendToRoom('block-request', {
         playerIndex: this.currentAction.player.index,
@@ -434,23 +476,26 @@ class Game {
     if (player.delegates.length > 1) {
       this.currentStatusOfPlay = constants.StatusOfPlay.DISCARDING_DELEGATE;
       this.currentDiscardingPlayer = player;
-      this.sendToRoom('status-update', 'Waiting on ' + player.name + ' to discard an influence');
-      this.sendToPlayer(player.socket_id, 'choose-influence');
+      this.sendToRoom('status-update', {
+        currentStatusToText: 'Waiting on ' + player.name + ' to discard an influence'
+      });
+      this.sendToPlayer('discard-delegate', {}, player.socket_id);
       // no next turn, need them to choose a card to discard
     } else {
       console.log('killing player ' + player.name);
       player.isAlive = false;
       this.deck.push(player.delegates.pop());
       helpers.shuffle(this.deck);
+      this.sendToPlayer('player-state', player, player.socket_id);
       this.nextStep();
     }
   }
 
-  sendGameStateToPlayer(playerSocket, data) {
-    playerSocket.emit('game-state', this.getGameState());
-
+  playerRequestedGameState(playerSocket, data) {
     const player = this.players.find((p) => p.socket_id === playerSocket.id);
-    this.sendToPlayer('player-state', player, playerSocket.id);
+    if (!player) return;
+
+    this.sendGameStateToPlayer(player, 'game-state');
   }
 
   // other helpers
@@ -461,8 +506,8 @@ class Game {
     this.sendToRoom('log', log);
   }
 
-  haveAllPlayersVoted() {
-    for (let player of this.players) {
+  haveAllPlayersVoted(challengedPlayer) {
+    for (let player of this.players.filter((p) => p !== challengedPlayer)) {
       if (!player.voted && player.isAlive) return false;
     }
     return true;

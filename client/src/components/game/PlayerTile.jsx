@@ -3,10 +3,16 @@ import React from 'react';
 // internal
 import './styles/PlayerTile.css';
 
-const PlayerTile = ({ player, isCurrentPlayer }) => {
-  console.log('isCurrentPlayer: ' + isCurrentPlayer);
+const PlayerTile = ({ player, isCurrentPlayer, choosingTarget, handleClick }) => {
   return (
-    <div className={isCurrentPlayer ? 'game-player-tile current-player' : 'game-player-tile'}>
+    <div
+      className={'game-player-tile' + (isCurrentPlayer ? ' current-player' : '') + (choosingTarget ? ' potential-target' : '')}
+      onClick={() => {
+        if (choosingTarget) {
+          handleClick(player.index);
+        }
+      }}
+    >
       <h3 className="player-name">{player.name}</h3>
       <p>{'Delegates Remaining: ' + player.delegates_count} </p>
       <p>{'Money: ' + player.money}</p>

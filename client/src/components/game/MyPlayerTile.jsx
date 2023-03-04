@@ -4,9 +4,9 @@ import React from 'react';
 import PlayerDelegate from './PlayerDelegate.jsx';
 import './styles/MyPlayerTile.css';
 
-const MyPlayerTile = ({ player, isCurrentPlayer }) => {
+const MyPlayerTile = ({ player, isCurrentPlayer, choosingTarget }) => {
   return (
-    <div className={isCurrentPlayer ? 'my-player-tile current-player' : 'my-player-tile'}>
+    <div className={isCurrentPlayer && !choosingTarget ? 'my-player-tile current-player' : 'my-player-tile'}>
       <h3 className="player-name">{player.name}</h3>
       <p>{'Money: ' + player.money}</p>
       <div className="player-delegates">

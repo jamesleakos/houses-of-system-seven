@@ -1,0 +1,28 @@
+.choose-delegates .player-delegate {
+  display: inline-block;
+  text-align: center;
+  margin: 5px;
+  width: 200px;
+  height: 220px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 1px solid white;
+  box-shadow: 0 0 10px white;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+
+.choose-delegates .player-delegate:hover {
+  outline: none;
+  border-color: white;
+  box-shadow: 0 0 50px white;
+  transform: scale(1.01);
+  -webkit-transform: scale(1.01);
+}
+
+.choose-delegates .player-delegate.chosen {
+  box-shadow: 0 0 50px white;
+  transform: scale(1.01);
+  -webkit-transform: scale(1.01);
+}

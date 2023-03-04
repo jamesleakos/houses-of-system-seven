@@ -5,7 +5,7 @@ import './styles/ChallengeAction.css';
 
 const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
   const parseAction = (ca) => {
-    const addendum = '';
+    let addendum = '';
     if (ca.targetIndex > -1) {
       addendum = ` on player ${ca.targetIndex}`;
     }
