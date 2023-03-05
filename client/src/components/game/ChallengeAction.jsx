@@ -4,14 +4,6 @@ import React from 'react';
 import './styles/ChallengeAction.css';
 
 const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
-  const parseAction = (ca) => {
-    let addendum = '';
-    if (ca.targetIndex > -1) {
-      addendum = ` on player ${ca.targetIndex}`;
-    }
-    return `Player ${ca.playerIndex} is attempting to use ${ca.action}${addendum}`;
-  };
-
   return (
     <div className="challenge-action">
       {
@@ -20,7 +12,7 @@ const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
           <div>Waiting for challengers...</div>
         ) : (
           <div>
-            <div>{parseAction(challengeAction)}</div>
+            <div>Challenge or block...</div>
             <div className="challenge-button-area">
               <div
                 className="challenge-button challenge hoss-button"

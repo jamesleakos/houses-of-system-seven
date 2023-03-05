@@ -5,23 +5,23 @@ import './styles/BlockAction.css';
 import Constants from '../../game_helpers/constants.js';
 
 const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
-  const parseAction = (ca) => {
+  const parseAction = (ba) => {
     let addendum = '';
-    if (ca.targetIndex > -1) {
-      addendum = ` on player ${ca.targetIndex}`;
+    if (ba.targetIndex > -1) {
+      addendum = ` on player ${ba.targetIndex}`;
     }
-    return `Player ${ca.playerIndex} is attempting to use ${ca.action}${addendum}`;
+    return `Player ${ba.playerIndex} is attempting to use ${ba.action}${addendum}`;
   };
 
   const parseDelegateNotice = (delegate) => {
-    if (myPlayer.delegates.incluces(delegate)) {
+    if (myPlayer.delegates.includes(delegate)) {
       return `You are the ${Constants.Delegates[delegate].display}. You would win a challenge.`;
     } else {
       return `You are not the ${Constants.Delegates[delegate].display}. You would lose a challenge.`;
     }
   };
 
-  const [actionObj, setActionObj] = React.useState(Constants.Actions[blockAction]);
+  const [actionObj, setActionObj] = React.useState(Constants.Actions[blockAction.action]);
 
   return (
     <div className="block-action">
@@ -31,20 +31,21 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
         <div>
           <div>{parseAction(blockAction)}</div>
           <div className="block-button-area">
-            {actionObj.blockableBy.map((delegate) => {
+            {actionObj?.blockableBy.map((delegate) => {
               return (
                 <div
                   className="block-button block hoss-button"
-                  style={{ backgroundImage: `url(${Constants.Delegates[delegate].url})` }}
+                  style={{ backgroundImage: `url('${Constants.Delegates[delegate].url}')` }}
                   onClick={() => handleBlockResponse({ blocking: true, delegate: delegate })}
+                  key={delegate}
                 >
                   <h3>{`Block with ${Constants.Delegates[delegate].display}`}</h3>
-                  <p>{parseDelegateNotice(delegate)}</p>
+                  <p className="notice">{parseDelegateNotice(delegate)}</p>
                 </div>
               );
             })}
             <div
-              className="challenge-button pass hoss-button"
+              className="block-button pass hoss-button"
               style={{ backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')" }}
               onClick={() => handleBlockResponse({ blocking: false })}
             >

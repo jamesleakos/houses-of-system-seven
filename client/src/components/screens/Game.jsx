@@ -30,8 +30,12 @@ const Game = ({ socket, setGameStarted }) => {
   });
   const [currentAttemptedAction, setCurrentAttemptedAction] = useState({
     action: '',
-    targetIndex: 0,
-    playerIndex: 0
+    targetIndex: null,
+    playerIndex: null
+  });
+  const [currentAttemptedBlock, setCurrentAttemptedBlock] = useState({
+    playerIndex: null,
+    blockingAsDelegate: ''
   });
   const [log, setLog] = useState([]);
 
@@ -81,6 +85,15 @@ const Game = ({ socket, setGameStarted }) => {
       setCurrentStatusToText(data.currentStatusToText);
       setCurrentAttemptedAction(data);
       setUIState('block-action');
+    });
+
+    socket.on('block-challenge-request', (data) => {
+      setCurrentStatusToText(data.currentStatusToText);
+      setCurrentAttemptedBlock({
+        playerIndex: data.blockingPlayer,
+        blockingAsDelegate: data.blockingAs
+      });
+      setUIState('block-challenge-action');
     });
 
     socket.on('discard-delegate', (data) => {
@@ -139,7 +152,14 @@ const Game = ({ socket, setGameStarted }) => {
     setCurrentStatusToText('Waiting on other players to respond.');
     socket.emit('player-block', {
       amBlocking: response.blocking,
-      delegate: response.delegate
+      blockingAs: response.delegate
+    });
+  };
+
+  const challengeBlock = (response) => {
+    setCurrentStatusToText('Waiting on other players to respond.');
+    socket.emit('player-block-challenge', {
+      amChallenging: response
     });
   };
 
@@ -168,6 +188,8 @@ const Game = ({ socket, setGameStarted }) => {
       return <BlockAction myPlayer={myPlayer} blockAction={currentAttemptedAction} handleBlockResponse={blockResponse} />;
     } else if (uiState === 'challenge-action') {
       return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedAction} challengeResponse={challengeResponse} />;
+    } else if (uiState === 'block-challenge-action') {
+      return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedBlock} challengeResponse={challengeBlock} />;
     } else if (uiState === 'discard-delegate') {
       return <ChooseDelegate delegates={myPlayer.delegates} chooseDelegates={discardDelegate} chooseNum={1} actionString={'discard'} />;
     } else if (uiState === 'exchanges-delegate') {

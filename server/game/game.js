@@ -168,18 +168,11 @@ class Game {
 
   playerChallengeResponse(playerSocket, data) {
     // player input checks
-    console.log('this.currentStatusOfPlay: ', this.currentStatusOfPlay);
-    console.log('constants.StatusOfPlay.REQUESTING_CHALLENGES: ', constants.StatusOfPlay.REQUESTING_CHALLENGES);
     if (this.currentStatusOfPlay !== constants.StatusOfPlay.REQUESTING_CHALLENGES) return;
-
     let player = this.IDToPlayer[playerSocket.id];
-
-    console.log('player === this.currentPlayer', player === this.currentPlayer);
 
     // only let opponents in the room submit
     if (!player || player === this.currentPlayer) return;
-
-    console.log('got resposne');
 
     // onto challenge response logic
     if (data.amChallenging) {
@@ -225,18 +218,25 @@ class Game {
     // only let opponents in the room submit
     if (!player || player === this.currentPlayer) return;
 
-    if (data.isBlocking) {
+    // get the action object and check if it can be blocked by the role the player is claiming
+    const actionObj = constants.Actions[this.currentAction.action];
+
+    if (data.amBlocking && actionObj.blockableBy.includes(data.blockingAs)) {
+      console.log(`${player.name} is blocking as the ${data.blockingAs}`);
       this.currentAction.blocksComplete = true;
       this.resetPlayerVotes();
       // go out for challenges to the block
       this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_BLOCK_CHALLENGES;
+      this.currentStatusToText = `${player.name} is attempting to block as the ${data.blockingAs}. Waiting for challenges...`;
       this.currentAction.blocker = player;
       this.currentAction.blockerDelegate = data.blockingAs;
       this.sendToRoom('block-challenge-request', {
         blockingPlayer: player.index,
-        blockingAs: data.blockingAs
+        blockingAs: data.blockingAs,
+        currentStatusToText: this.currentStatusToText
       });
     } else {
+      console.log(`${player.name} is not blocking`);
       player.voted = true;
       if (this.haveAllPlayersVoted(this.currentAction.player)) {
         this.currentAction.blocksComplete = true;
@@ -255,7 +255,7 @@ class Game {
     // only let opponents in the room submit
     if (!player || player === this.currentAction.blocker) return;
 
-    if (data.isChallenging) {
+    if (data.amChallenging) {
       this.resetPlayerVotes();
 
       // resolve the challenge
@@ -271,11 +271,13 @@ class Game {
           role: challengeResult.role
         });
         this.removeDelegate(player);
+        this.currentAction.canceled = true;
       }
     } else {
       player.voted = true;
       if (this.haveAllPlayersVoted(this.currentAction.blocker)) {
         this.resetPlayerVotes();
+        this.currentAction.canceled = true;
         this.nextStep();
       } else {
         this.sendToRoom('player-voted', player.index);
