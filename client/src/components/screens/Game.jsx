@@ -8,6 +8,7 @@ import BlockAction from '../game/BlockAction.jsx';
 import ChallengeAction from '../game/ChallengeAction.jsx';
 import ChooseDelegate from '../game/ChooseDelegate.jsx';
 import GameOver from '../game/GameOver.jsx';
+import AlertModal from '../game/AlertModal.jsx';
 // css
 import './styles/Game.css';
 
@@ -39,12 +40,19 @@ const Game = ({ socket, setGameStarted }) => {
   });
   const [delegatesForExchange, setDelegatesForExchange] = useState([]);
   const [log, setLog] = useState([]);
+  const [modalOn, setModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
     if (!socket) return;
 
+    socket.on('new-game', (data) => {
+      setLog([]);
+    });
+
     socket.on('start-turn', (data) => {
       setGameState(data);
+      setLog((log) => [...log, '------------']);
     });
     // this is just called after the player loads in and requests the game state
     socket.on('game-state', (data) => {
@@ -130,6 +138,11 @@ const Game = ({ socket, setGameStarted }) => {
       setUIState('waiting');
     });
 
+    socket.on('role-changed', (data) => {
+      setModal(true);
+      setModalMessage(data.text);
+    });
+
     socket.on('log', (data) => {
       setLog((log) => [...log, data]);
     });
@@ -194,6 +207,10 @@ const Game = ({ socket, setGameStarted }) => {
     socket.emit('delegate-discard', {
       delegate: delegates[0]
     });
+
+    if (uiState === 'exchange-delegates' || uiState === 'discard-delegate') {
+      setUIState('waiting');
+    }
   };
 
   const exhangeDelegates = (delegates) => {
@@ -237,21 +254,7 @@ const Game = ({ socket, setGameStarted }) => {
     } else if (uiState === 'waiting') {
       return <div>Waiting...</div>;
     } else if (uiState === 'waiting-on-voters') {
-      return (
-        <div>
-          {players.map((player, index) => {
-            if (player.voted) {
-              return <div key={index + ''}>{player.name} acted</div>;
-            } else {
-              return (
-                <div style={{ color: 'red' }} key={index + ''}>
-                  {player.name} has not acted yet
-                </div>
-              );
-            }
-          })}
-        </div>
-      );
+      return <div>Waiting...</div>;
     } else {
       return <div>Waiting...</div>;
     }
@@ -273,7 +276,7 @@ const Game = ({ socket, setGameStarted }) => {
           key={index + ''}
           player={player}
           isCurrentPlayer={index === currentPlayerIndex}
-          choosingTarget={uiState === 'choose-target'}
+          choosableTarget={uiState === 'choose-target' && player.isAlive}
           handleClick={chooseTarget}
         />
       );
@@ -282,27 +285,34 @@ const Game = ({ socket, setGameStarted }) => {
 
   return (
     <div className="game-screen">
-      <div className="status-bar">
-        <h3 className="status-of-play">{'STATUS: ' + currentStatusToText}</h3>
-      </div>
-      <div className="game-area">
-        <div className="player-list" style={{ gridColumn: 1 }}>
-          <h3 className="players-title">Players</h3>
-          {players.map((player, index) => {
-            return playerTile(player, index);
-          })}
+      <div className="wrapper">
+        <div className="status-bar">
+          <h3 className="status-of-play">{'STATUS: ' + currentStatusToText}</h3>
         </div>
+        <div className="game-area">
+          <div className="player-list" style={{ gridColumn: 1 }}>
+            <h3 className="players-title">Players</h3>
+            {players.map((player, index) => {
+              return playerTile(player, index);
+            })}
+          </div>
 
-        <div className="play-area" style={{ gridColumn: 2 }}>
-          {gameAreaContent()}
-        </div>
-        <div className="log-area" style={{ gridColumn: 3 }}>
-          <h3>Log</h3>
-          {log.map((logItem, index) => {
-            return <p key={index + ''}>{logItem}</p>;
-          })}
+          <div className="play-area" style={{ gridColumn: 2 }}>
+            {gameAreaContent()}
+          </div>
+          <div className="log-area" style={{ gridColumn: 3 }}>
+            <h3>Log</h3>
+            <div className="log-list">
+              {log.map((logItem, index) => {
+                return <p key={index + ''}>{logItem}</p>;
+              })}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* modal */}
+      {modalOn ? <AlertModal message={modalMessage} setModal={setModal} /> : null}
     </div>
   );
 };

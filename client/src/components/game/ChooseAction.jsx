@@ -152,7 +152,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
               ? 'You have the captain, you would win a challenge.'
               : 'Pretend to have the captain. You would lose a challenge.'}
           </p>
-          <p className="block-info">Blockable if target is the Contessa or Captain</p>
+          <p className="block-info">Blockable if target is the Ambassador or Captain</p>
         </div>
         {/* Exchange Roles */}
         <div

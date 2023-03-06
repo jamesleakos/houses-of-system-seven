@@ -3,19 +3,17 @@ import React from 'react';
 // internal
 import './styles/PlayerTile.css';
 
-const PlayerTile = ({ player, isCurrentPlayer, choosingTarget, handleClick }) => {
-  console.log('player tile player');
-  console.log(player);
+const PlayerTile = ({ player, isCurrentPlayer, choosableTarget, handleClick }) => {
   return (
     <div
       className={
         'game-player-tile' +
         (isCurrentPlayer ? ' current-player' : '') +
-        (choosingTarget ? ' potential-target' : '') +
+        (choosableTarget ? ' potential-target' : '') +
         (player.isAlive ? ' alive' : ' dead')
       }
       onClick={() => {
-        if (choosingTarget) {
+        if (choosableTarget) {
           handleClick(player.index);
         }
       }}

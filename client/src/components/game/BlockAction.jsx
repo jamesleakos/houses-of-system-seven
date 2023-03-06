@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 // internal
 import './styles/BlockAction.css';
@@ -21,7 +21,7 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
     }
   };
 
-  const [actionObj, setActionObj] = React.useState(Constants.Actions[blockAction.action]);
+  const [actionObj, setActionObj] = useState(Constants.Actions[blockAction.action]);
 
   return (
     <div className="block-action">

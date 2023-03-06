@@ -26,7 +26,7 @@ const Actions = {
     delegate: 'all',
     blockableBy: [CardNames.DUKE],
     blockAction: 'block_foreign_aid',
-    onlyTargetBlocks: true,
+    onlyTargetBlocks: false,
     isChallengeable: false,
     upfrontPayment: 0,
     execute: function (game, player, target) {

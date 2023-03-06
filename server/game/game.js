@@ -45,6 +45,8 @@ class Game {
     }
     this.currentStatusToText = 'Waiting for ' + this.currentPlayer.name + ' to make a play';
 
+    this.sendToRoom('new-game', {});
+
     this.startTurn();
   }
   // ending game
@@ -163,6 +165,8 @@ class Game {
     let target = null;
     if (data.targetIndex !== null && data.targetIndex !== undefined) {
       target = this.players[data.targetIndex];
+      if (!target) return;
+      if (!target.isAlive) return;
     }
     console.log('target: ' + target);
     console.log('targetIndex: ' + data.targetIndex);
@@ -392,6 +396,7 @@ class Game {
     for (let remaining of pool) {
       this.deck.push(remaining);
     }
+    helpers.shuffle(this.deck);
     this.sentDelegates = [];
 
     this.nextStep();
@@ -523,17 +528,28 @@ class Game {
     actionObj.execute(this, player, target);
   }
 
+  switchDelegate(player, delegate) {
+    const index = player.delegates.indexOf(delegate);
+    player.delegates[index] = this.deck.pop();
+    this.deck.push(delegate);
+    helpers.shuffle(this.deck);
+    this.sendToPlayer('player-state', player, player.socket_id);
+    this.sendToPlayer(
+      'role-changed',
+      {
+        text: `You revealed ${delegate} to win the challenge. You switched it for a new delegate and now have a ${player.delegates[index]}.`
+      },
+      player.socket_id
+    );
+  }
+
   resolveChallenge(player, action) {
     const actionObj = constants.Actions[action];
     if (!actionObj) throw Error('action not found');
 
     if (player.delegates.includes(actionObj.delegate)) {
       // switch the player's delegate with a new one from the deck
-      const index = player.delegates.indexOf(actionObj.delegate);
-      player.delegates[index] = this.deck.pop();
-      this.deck.push(actionObj.delegate);
-      this.sendToPlayer('player-state', player, player.socket_id);
-      player, 'player-state';
+      this.switchDelegate(player, actionObj.delegate);
       // return
       return {
         wasSuccessful: false
@@ -552,10 +568,7 @@ class Game {
     for (let delegate of blockingPlayer.delegates) {
       if (counterActionObj.delegates.includes(delegate)) {
         // switch the player's delegate with a new one from the deck
-        const index = blockingPlayer.delegates.indexOf(delegate);
-        blockingPlayer.delegates[index] = this.deck.pop();
-        this.deck.push(delegate);
-        this.sendToPlayer('player-state', blockingPlayer, blockingPlayer.socket_id);
+        this.switchDelegate(blockingPlayer, delegate);
         return {
           wasSuccessful: false
         };

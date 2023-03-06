@@ -12,7 +12,7 @@ const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
           <div>Waiting for challengers...</div>
         ) : (
           <div>
-            <div>Challenge or block...</div>
+            <div>Challenge or Pass...</div>
             <div className="challenge-button-area">
               <div
                 className="challenge-button challenge hoss-button"

@@ -5,8 +5,11 @@
   background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 30px;
   color: white;
+}
+
+.game-screen .wrapper {
+  padding: 30px;
 }
 
 .status-bar {
@@ -39,4 +42,9 @@
 
 .log-area {
   padding: 0 10px;
+}
+
+.log-list {
+  height: calc(90vh - 100px);
+  overflow-y: auto;
 }
