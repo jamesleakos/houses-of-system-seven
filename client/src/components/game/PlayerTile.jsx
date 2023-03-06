@@ -4,9 +4,16 @@ import React from 'react';
 import './styles/PlayerTile.css';
 
 const PlayerTile = ({ player, isCurrentPlayer, choosingTarget, handleClick }) => {
+  console.log('player tile player');
+  console.log(player);
   return (
     <div
-      className={'game-player-tile' + (isCurrentPlayer ? ' current-player' : '') + (choosingTarget ? ' potential-target' : '')}
+      className={
+        'game-player-tile' +
+        (isCurrentPlayer ? ' current-player' : '') +
+        (choosingTarget ? ' potential-target' : '') +
+        (player.isAlive ? ' alive' : ' dead')
+      }
       onClick={() => {
         if (choosingTarget) {
           handleClick(player.index);
@@ -14,8 +21,8 @@ const PlayerTile = ({ player, isCurrentPlayer, choosingTarget, handleClick }) =>
       }}
     >
       <h3 className="player-name">{player.name}</h3>
-      <p>{'Delegates Remaining: ' + player.delegates_count} </p>
       <p>{'Money: ' + player.money}</p>
+      <p>{'Delegates Remaining: ' + player.delegates_count} </p>
     </div>
   );
 };

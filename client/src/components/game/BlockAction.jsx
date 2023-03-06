@@ -25,16 +25,16 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
 
   return (
     <div className="block-action">
-      {myPlayer.index === blockAction.playerIndex ? (
+      {myPlayer.index === blockAction.playerIndex || (actionObj.onlyTargetBlocks && myPlayer.index !== blockAction.targetIndex) ? (
         <div>Waiting for blockers...</div>
       ) : (
         <div>
-          <div>{parseAction(blockAction)}</div>
+          {/* <div>{parseAction(blockAction)}</div> */}
           <div className="block-button-area">
             {actionObj?.blockableBy.map((delegate) => {
               return (
                 <div
-                  className="block-button block hoss-button"
+                  className="block-button"
                   style={{ backgroundImage: `url('${Constants.Delegates[delegate].url}')` }}
                   onClick={() => handleBlockResponse({ blocking: true, delegate: delegate })}
                   key={delegate}
@@ -45,7 +45,7 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
               );
             })}
             <div
-              className="block-button pass hoss-button"
+              className="block-button"
               style={{ backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')" }}
               onClick={() => handleBlockResponse({ blocking: false })}
             >

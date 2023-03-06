@@ -9,6 +9,11 @@
   transition: 0.5s ease;
 }
 
+.my-player-tile.dead {
+  border: 1px solid red;
+  color: red;
+}
+
 .my-player-tile .player-name {
   font-size: .9rem;
 }

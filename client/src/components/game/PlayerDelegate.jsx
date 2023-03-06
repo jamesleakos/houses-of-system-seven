@@ -22,7 +22,7 @@ const PlayerDelegate = ({ delegate, index, clickable, onClick, chosen }) => {
       }}
       onClick={handleClick}
     >
-      <h3>{constants.Delegates[delegate].display}</h3>
+      <h3>{constants.Delegates[delegate]?.display}</h3>
     </div>
   );
 };

@@ -36,6 +36,8 @@ const Actions = {
   income: {
     delegate: 'all',
     blockableBy: [],
+    blockAction: null,
+    onlyTargetBlocks: null,
     isChallengeable: false,
     upfrontPayment: 0,
     execute: function (game, player, target) {
@@ -46,6 +48,8 @@ const Actions = {
   foreign_aid: {
     delegate: 'all',
     blockableBy: [CardNames.DUKE],
+    blockAction: 'block_foreign_aid',
+    onlyTargetBlocks: true,
     isChallengeable: false,
     upfrontPayment: 0,
     execute: function (game, player, target) {
@@ -56,6 +60,8 @@ const Actions = {
   coup: {
     delegate: 'all',
     blockableBy: [],
+    blockAction: null,
+    onlyTargetBlocks: null,
     isChallengeable: false,
     upfrontPayment: 7,
     execute: function (game, player, target) {
@@ -69,6 +75,8 @@ const Actions = {
   tax: {
     delegate: CardNames.DUKE,
     blockableBy: [],
+    blockAction: null,
+    onlyTargetBlocks: null,
     isChallengeable: true,
     upfrontPayment: 0,
     execute: function (game, player, target) {
@@ -79,6 +87,8 @@ const Actions = {
   assassinate: {
     delegate: CardNames.ASSASSIN,
     blockableBy: [CardNames.CONTESSA],
+    blockAction: 'block_assassinate',
+    onlyTargetBlocks: true,
     isChallengeable: true,
     upfrontPayment: 3,
     execute: function (game, player, target) {
@@ -92,6 +102,8 @@ const Actions = {
   exchange: {
     delegate: CardNames.AMBASSADOR,
     blockableBy: [],
+    blockAction: null,
+    onlyTargetBlocks: null,
     isChallengeable: true,
     upfrontPayment: 0,
     execute: function (game, player, target) {
@@ -103,6 +115,8 @@ const Actions = {
   steal: {
     delegate: CardNames.CAPTAIN,
     blockableBy: [CardNames.CAPTAIN, CardNames.AMBASSADOR],
+    blockAction: 'block_steal',
+    onlyTargetBlocks: true,
     isChallengeable: true,
     upfrontPayment: 0,
     execute: function (game, player, target) {

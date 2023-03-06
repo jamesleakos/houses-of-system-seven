@@ -61,6 +61,18 @@ class Game {
 
   // turn flow
   startTurn() {
+    this.currentAction = {
+      player: null,
+      action: null,
+      target: null,
+      blocker: null,
+      blockerDelegate: null,
+      challengesComplete: false,
+      blocksComplete: false,
+      executed: false,
+      canceled: false
+    };
+
     this.currentStatusOfPlay = constants.StatusOfPlay.CHOOSING_ACTION;
     this.sendGameStateToPlayers('start-turn');
   }
@@ -141,12 +153,17 @@ class Game {
     if (this.currentStatusOfPlay !== constants.StatusOfPlay.CHOOSING_ACTION) return;
     let player = this.IDToPlayer[playerSocket.id];
     if (player !== this.currentPlayer) return;
+    // dead men tell no tales
+    if (!player.isAlive) return;
 
     console.log('passed intro checks');
 
     // record the action data
     const action = data.action;
-    const target = !!data.targetIndex ? this.players[data.targetIndex] : null;
+    let target = null;
+    if (data.targetIndex !== null && data.targetIndex !== undefined) {
+      target = this.players[data.targetIndex];
+    }
     console.log('target: ' + target);
     console.log('targetIndex: ' + data.targetIndex);
 
@@ -176,18 +193,20 @@ class Game {
       }
     }
 
-    this.nextStep();
     // log to players
-    this.logAction(action, player, target);
+    this.sendToRoom('log', `${player.name} is attempting to use ${action}${!!target ? ' on ' + target.name : ''}`);
+
+    this.nextStep();
   }
 
   playerChallengeResponse(playerSocket, data) {
     // player input checks
     if (this.currentStatusOfPlay !== constants.StatusOfPlay.REQUESTING_CHALLENGES) return;
     let player = this.IDToPlayer[playerSocket.id];
-
     // only let opponents in the room submit
     if (!player || player === this.currentPlayer) return;
+    // dead men tell no tales
+    if (!player.isAlive) return;
 
     // onto challenge response logic
     if (data.amChallenging) {
@@ -199,7 +218,9 @@ class Game {
       if (challengeResult.wasSuccessful) {
         console.log('challenge was successful');
         this.sendToRoom('challenge-result', {
-          wasSuccessful: true
+          wasSuccessful: true,
+          challengingPlayer: player.index,
+          text: `${player.name} successfully challenged ${this.currentAction.player.name}.`
         });
         this.currentAction.canceled = true;
         this.removeDelegate(this.currentPlayer);
@@ -207,7 +228,9 @@ class Game {
         console.log('challenge was not successful');
         this.sendToRoom('challenge-result', {
           wasSuccessful: false,
-          role: challengeResult.role
+          role: challengeResult.role,
+          challengingPlayer: player.index,
+          text: `${player.name} unsuccessfully challenged ${this.currentAction.player.name}.`
         });
         this.removeDelegate(player);
       }
@@ -232,9 +255,16 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player === this.currentPlayer) return;
+    // dead men tell no tales
+    if (!player.isAlive) return;
 
     // get the action object and check if it can be blocked by the role the player is claiming
     const actionObj = constants.Actions[this.currentAction.action];
+
+    // check to see if the action is only blockable by the target
+    // if so, make sure the submitting player is is the target
+    if (actionObj.blockableBy.length === 0) return;
+    if (actionObj.onlyTargetBlocks && player !== this.currentAction.target) return;
 
     if (data.amBlocking && actionObj.blockableBy.includes(data.blockingAs)) {
       console.log(`${player.name} is blocking as the ${data.blockingAs}`);
@@ -255,12 +285,12 @@ class Game {
     } else {
       console.log(`${player.name} is not blocking`);
       player.voted = true;
-      if (this.haveAllPlayersVoted(this.currentAction.player)) {
+      if (this.haveAllPlayersVoted(this.currentAction.player) || actionObj.onlyTargetBlocks) {
         this.currentAction.blocksComplete = true;
         this.resetPlayerVotes();
         this.nextStep();
       } else {
-        this.sendToRoom('player-voted', playerIndex);
+        this.sendToRoom('player-voted', player.index);
       }
     }
   }
@@ -271,6 +301,8 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player === this.currentAction.blocker) return;
+    // dead men tell no tales
+    if (!player.isAlive) return;
 
     if (data.amChallenging) {
       this.resetPlayerVotes();
@@ -315,6 +347,8 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player !== this.currentDiscardingPlayer) return;
+    // dead men tell no tales
+    if (!player.isAlive) return;
 
     const index = player.delegates.indexOf(data.delegate);
     if (index === -1) {
@@ -336,6 +370,8 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     // only let opponents in the room submit
     if (!player || player !== this.currentPlayer) return;
+    // dead men tell no tales
+    if (!player.isAlive) return;
 
     // should probably save the sent delegates somewhere so that we know the player isn't cheating
     const delegateNum = player.delegates.length;
@@ -416,6 +452,14 @@ class Game {
   nextStep() {
     const actionObj = constants.Actions[this.currentAction.action];
     if (this.currentAction.canceled) {
+      // log to players
+      this.sendToRoom(
+        'log',
+        `${this.currentAction.player.name} did not successfully use ${this.currentAction.action}${
+          !!this.currentAction.target ? ' on ' + this.currentAction.target.name : ''
+        }`
+      );
+
       this.nextTurn();
       return;
     }
@@ -423,7 +467,9 @@ class Game {
     // first, we check if we've done our challenges
     if (actionObj.isChallengeable && !this.currentAction.challengesComplete) {
       this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_CHALLENGES;
-      this.currentStatusToText = 'Requesting Challenges';
+      this.currentStatusToText = `${this.currentAction.player.name} is using ${this.currentAction.action}${
+        !!this.currentAction.target ? ' on ' + this.currentAction.target.name : ''
+      } - Requesting Challenges`;
       this.sendToRoom('challenge-request', {
         playerIndex: this.currentAction.player.index,
         targetIndex: !!this.currentAction.target ? this.currentAction.target.index : -1,
@@ -436,17 +482,28 @@ class Game {
     // then, we check if we've done our blocks
     if (actionObj.blockableBy.length > 0 && !this.currentAction.blocksComplete) {
       console.log('requesting blocks');
-      this.currentStatusToText = 'Requesting Blocks';
+      this.currentStatusToText = `${this.currentAction.player.name} is using ${this.currentAction.action}${
+        !!this.currentAction.target ? ' on ' + this.currentAction.target.name : ''
+      } - Requesting Blocks`;
       this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_BLOCKS;
       this.sendToRoom('block-request', {
         playerIndex: this.currentAction.player.index,
         targetIndex: !!this.currentAction.target ? this.currentAction.target.index : null,
-        action: this.currentAction.action
+        action: this.currentAction.action,
+        currentStatusToText: this.currentStatusToText
       });
       return;
     }
 
     if (!this.currentAction.executed) {
+      // log to players
+      this.sendToRoom(
+        'log',
+        `${this.currentAction.player.name} successfully used ${this.currentAction.action}${
+          !!this.currentAction.target ? ' on ' + this.currentAction.target.name : ''
+        }`
+      );
+
       // otherwise, we execute the action
       this.executeAction(this.currentAction.action, this.currentAction.player, this.currentAction.target);
       return;
@@ -498,7 +555,7 @@ class Game {
         const index = blockingPlayer.delegates.indexOf(delegate);
         blockingPlayer.delegates[index] = this.deck.pop();
         this.deck.push(delegate);
-        this.sendToPlayer('player-state', player, player.socket_id);
+        this.sendToPlayer('player-state', blockingPlayer, blockingPlayer.socket_id);
         return {
           wasSuccessful: false
         };
@@ -511,8 +568,7 @@ class Game {
   }
 
   removeDelegate(player) {
-    console.log('removing delegate from ' + player.name);
-    console.log(player.delegates);
+    this.sendToRoom('log', `${player.name} lost a delegate`);
     if (player.delegates.length > 1) {
       this.currentStatusOfPlay = constants.StatusOfPlay.DISCARDING_DELEGATE;
       this.currentDiscardingPlayer = player;
@@ -522,7 +578,7 @@ class Game {
       this.sendToPlayer('discard-delegate', {}, player.socket_id);
       // no next turn, need them to choose a card to discard
     } else {
-      console.log('killing player ' + player.name);
+      this.sendToRoom('log', `${player.name} died!`);
       player.isAlive = false;
       this.deck.push(player.delegates.pop());
       helpers.shuffle(this.deck);
@@ -539,12 +595,6 @@ class Game {
   }
 
   // other helpers
-
-  logAction(action, player, target) {
-    let log = player.name + ' used ' + action;
-    if (target) log = log + ' on ' + target.name;
-    this.sendToRoom('log', log);
-  }
 
   haveAllPlayersVoted(challengedPlayer) {
     for (let player of this.players.filter((p) => p !== challengedPlayer)) {

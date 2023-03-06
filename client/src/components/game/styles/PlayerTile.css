@@ -9,27 +9,32 @@
   transition: 0.5s ease;
 }
 
+.game-player-tile.dead {
+  border: 1px solid red;
+  color: red;
+}
+
 .current-player {
   outline: none;
   border-color: white;
-  box-shadow: 0 0 10px white;
-  transform: scale(1.02);
-  -webkit-transform: scale(1.02);
+  box-shadow: 0 0 20px white;
+  transform: scale(1.03);
+  -webkit-transform: scale(1.03);
 }
 
 .potential-target {
   outline: none;
   border-color: white;
-  box-shadow: 0 0 20px white;
+  box-shadow: 0 0 30px white;
   cursor: pointer;
-  transform: scale(1.01);
-  -webkit-transform: scale(1.01);
+  transform: scale(1.03);
+  -webkit-transform: scale(1.03);
 }
 
 .potential-target:hover {
-  box-shadow: 0 0 50px white;
-  transform: scale(1.02);
-  -webkit-transform: scale(1.02);
+  box-shadow: 0 0 60px white;
+  transform: scale(1.04);
+  -webkit-transform: scale(1.04);
 }
 
 .game-player-tile .player-name {

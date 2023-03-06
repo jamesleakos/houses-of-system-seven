@@ -23,7 +23,8 @@ const buildGamePlayersToSendSafe = (gamePlayers) => {
       delegates_count: gamePlayer.delegates.length,
       money: gamePlayer.money,
       isAlive: gamePlayer.isAlive,
-      active: gamePlayer.active
+      active: gamePlayer.active,
+      voted: gamePlayer.voted
     };
   });
 };

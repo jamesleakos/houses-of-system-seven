@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 // imports
-import PlayerTile from '../game/playerTile.jsx';
+import PlayerTile from '../game/PlayerTile.jsx';
 import MyPlayerTile from '../game/MyPlayerTile.jsx';
 import ChooseAction from '../game/ChooseAction.jsx';
 import BlockAction from '../game/BlockAction.jsx';
@@ -54,11 +54,12 @@ const Game = ({ socket, setGameStarted }) => {
       setMyPlayer(data.player);
       setCurrentPlayerIndex(data.currentPlayerIndex);
       setPlayers(data.players);
-      setCurrentStatusToText(data.currentStatusToText);
       if (data.currentStatusOfPlay === 'choosing-action') {
         if (data.player.index === data.currentPlayerIndex) {
+          setCurrentStatusToText('YOUR TURN!');
           setUIState('choose-action');
         } else {
+          setCurrentStatusToText(data.currentStatusToText);
           setUIState('waiting-on-action');
         }
       }
@@ -110,8 +111,11 @@ const Game = ({ socket, setGameStarted }) => {
       setUIState('exchange-delegates');
     });
 
-    socket.on('player-voted', (data) => {
-      setLog((log) => [...log, 'Player ' + data.playerIndex + ' voted.']);
+    socket.on('player-voted', (playerIndex) => {
+      setPlayers((players) => {
+        players[playerIndex].voted = true;
+        return players;
+      });
     });
 
     socket.on('end-game', (data) => {
@@ -119,6 +123,15 @@ const Game = ({ socket, setGameStarted }) => {
       setCurrentStatusToText('Game over. ' + data.winner + ' won!');
       setPlayers(data.players);
       setUIState('end-game');
+    });
+
+    socket.on('challenge-result', (data) => {
+      setLog((log) => [...log, data.text]);
+      setUIState('waiting');
+    });
+
+    socket.on('log', (data) => {
+      setLog((log) => [...log, data]);
     });
 
     socket.emit('request-gamestate');
@@ -156,6 +169,7 @@ const Game = ({ socket, setGameStarted }) => {
     socket.emit('player-challenge', {
       amChallenging: response
     });
+    setUIState('waiting-on-voters');
   };
 
   const blockResponse = (response) => {
@@ -164,6 +178,7 @@ const Game = ({ socket, setGameStarted }) => {
       amBlocking: response.blocking,
       blockingAs: response.delegate
     });
+    setUIState('waiting-on-voters');
   };
 
   const challengeBlock = (response) => {
@@ -171,6 +186,7 @@ const Game = ({ socket, setGameStarted }) => {
     socket.emit('player-block-challenge', {
       amChallenging: response
     });
+    setUIState('waiting-on-voters');
   };
 
   const discardDelegate = (delegates) => {
@@ -192,6 +208,9 @@ const Game = ({ socket, setGameStarted }) => {
   };
 
   const gameAreaContent = () => {
+    if (!myPlayer.isAlive) {
+      return <div>You are dead.</div>;
+    }
     if (uiState === 'choose-action') {
       return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} />;
     } else if (uiState === 'block-action') {
@@ -215,8 +234,26 @@ const Game = ({ socket, setGameStarted }) => {
       return <div>Choose a player to target</div>;
     } else if (uiState === 'end-game') {
       return <GameOver requestNewGame={requestNewGame} />;
+    } else if (uiState === 'waiting') {
+      return <div>Waiting...</div>;
+    } else if (uiState === 'waiting-on-voters') {
+      return (
+        <div>
+          {players.map((player, index) => {
+            if (player.voted) {
+              return <div key={index + ''}>{player.name} acted</div>;
+            } else {
+              return (
+                <div style={{ color: 'red' }} key={index + ''}>
+                  {player.name} has not acted yet
+                </div>
+              );
+            }
+          })}
+        </div>
+      );
     } else {
-      return <div>Placeholder</div>;
+      return <div>Waiting...</div>;
     }
   };
 
