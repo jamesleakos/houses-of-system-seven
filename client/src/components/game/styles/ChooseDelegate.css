@@ -17,12 +17,13 @@
   outline: none;
   border-color: white;
   box-shadow: 0 0 50px white;
-  transform: scale(1.01);
-  -webkit-transform: scale(1.01);
+  transform: scale(1.02);
+  -webkit-transform: scale(1.02);
 }
 
 .choose-delegates .player-delegate.chosen {
-  box-shadow: 0 0 50px white;
-  transform: scale(1.01);
-  -webkit-transform: scale(1.01);
+  border-color: green;
+  box-shadow: 0 0 100px green;
+  transform: scale(1.02);
+  -webkit-transform: scale(1.02);
 }

@@ -146,7 +146,9 @@ class Game {
 
     // record the action data
     const action = data.action;
-    const target = !!data.targetIndex ? this.gamePlayers[data.targetIndex] : null;
+    const target = !!data.targetIndex ? this.players[data.targetIndex] : null;
+    console.log('target: ' + target);
+    console.log('targetIndex: ' + data.targetIndex);
 
     console.log(action);
 
@@ -160,6 +162,19 @@ class Game {
       blocksComplete: false,
       executed: false
     };
+
+    // make the upfront payment
+    const actionObj = constants.Actions[this.currentAction.action];
+    console.log(actionObj);
+    if (actionObj.upfrontPayment) {
+      console.log('has upfront payment');
+      if (player.money >= actionObj.upfrontPayment) {
+        console.log('deducting upfront payment');
+        player.money -= actionObj.upfrontPayment;
+      } else {
+        this.currentAction.canceled = true;
+      }
+    }
 
     this.nextStep();
     // log to players
@@ -186,8 +201,8 @@ class Game {
         this.sendToRoom('challenge-result', {
           wasSuccessful: true
         });
-        this.removeDelegate(this.currentPlayer);
         this.currentAction.canceled = true;
+        this.removeDelegate(this.currentPlayer);
       } else {
         console.log('challenge was not successful');
         this.sendToRoom('challenge-result', {
@@ -223,13 +238,15 @@ class Game {
 
     if (data.amBlocking && actionObj.blockableBy.includes(data.blockingAs)) {
       console.log(`${player.name} is blocking as the ${data.blockingAs}`);
+      // update the current action object
       this.currentAction.blocksComplete = true;
       this.resetPlayerVotes();
-      // go out for challenges to the block
       this.currentStatusOfPlay = constants.StatusOfPlay.REQUESTING_BLOCK_CHALLENGES;
       this.currentStatusToText = `${player.name} is attempting to block as the ${data.blockingAs}. Waiting for challenges...`;
       this.currentAction.blocker = player;
       this.currentAction.blockerDelegate = data.blockingAs;
+
+      // send the request to the room
       this.sendToRoom('block-challenge-request', {
         blockingPlayer: player.index,
         blockingAs: data.blockingAs,
@@ -259,19 +276,26 @@ class Game {
       this.resetPlayerVotes();
 
       // resolve the challenge
-      const challengeResult = this.resolveChallenge(this.currentAction.blocker, this.currentAction.action);
+      const challengeResult = this.resolveBlockChallenge(this.currentAction.blocker, this.currentAction.action);
+      console.log('this.currentAction.blocker: ');
+      console.log(this.currentAction.blocker);
+      console.log('this.currentAction.action: ' + this.currentAction.action);
+      console.log('challengeResult: ');
+      console.log(challengeResult);
       if (challengeResult.wasSuccessful) {
-        sendToRoom('challenge-result', {
+        console.log('challenge was successful');
+        this.sendToRoom('challenge-result', {
           wasSuccessful: true
         });
         this.removeDelegate(this.currentAction.blocker);
       } else {
-        sendToRoom('challenge-result', {
+        console.log('challenge was not successful');
+        this.sendToRoom('challenge-result', {
           wasSuccessful: false,
           role: challengeResult.role
         });
-        this.removeDelegate(player);
         this.currentAction.canceled = true;
+        this.removeDelegate(player);
       }
     } else {
       player.voted = true;
@@ -333,6 +357,8 @@ class Game {
       this.deck.push(remaining);
     }
     this.sentDelegates = [];
+
+    this.nextStep();
   }
 
   onPlayerDisconnected(playerSocket) {
@@ -441,35 +467,47 @@ class Game {
   }
 
   resolveChallenge(player, action) {
-    let isCounterAction = false;
     const actionObj = constants.Actions[action];
-    if (!actionObj) {
-      isCounterAction = true;
-      actionObj = constants.CounterActions[action];
-    }
     if (!actionObj) throw Error('action not found');
 
-    if (!isCounterAction) {
-      if (player.delegates.includes(actionObj.delegate)) {
-        return {
-          wasSuccessful: false
-        };
-      } else {
-        return {
-          wasSuccessful: true
-        };
-      }
+    if (player.delegates.includes(actionObj.delegate)) {
+      // switch the player's delegate with a new one from the deck
+      const index = player.delegates.indexOf(actionObj.delegate);
+      player.delegates[index] = this.deck.pop();
+      this.deck.push(actionObj.delegate);
+      this.sendToPlayer('player-state', player, player.socket_id);
+      player, 'player-state';
+      // return
+      return {
+        wasSuccessful: false
+      };
     } else {
-      if (player.delegates.includes(this.currentAction.blockerDelegate)) {
+      return {
+        wasSuccessful: true
+      };
+    }
+  }
+
+  resolveBlockChallenge(blockingPlayer, actionBeingBlocked) {
+    const counterActionObj = constants.CounterActions[constants.Actions[actionBeingBlocked].blockAction];
+    if (!counterActionObj) throw Error('counter action not found');
+
+    for (let delegate of blockingPlayer.delegates) {
+      if (counterActionObj.delegates.includes(delegate)) {
+        // switch the player's delegate with a new one from the deck
+        const index = blockingPlayer.delegates.indexOf(delegate);
+        blockingPlayer.delegates[index] = this.deck.pop();
+        this.deck.push(delegate);
+        this.sendToPlayer('player-state', player, player.socket_id);
         return {
           wasSuccessful: false
-        };
-      } else {
-        return {
-          wasSuccessful: true
         };
       }
     }
+
+    return {
+      wasSuccessful: true
+    };
   }
 
   removeDelegate(player) {

@@ -37,6 +37,7 @@ const Actions = {
     delegate: 'all',
     blockableBy: [],
     isChallengeable: false,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       player.money += 1;
       game.nextTurn();
@@ -46,6 +47,7 @@ const Actions = {
     delegate: 'all',
     blockableBy: [CardNames.DUKE],
     isChallengeable: false,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       player.money += 2;
       game.nextTurn();
@@ -55,16 +57,12 @@ const Actions = {
     delegate: 'all',
     blockableBy: [],
     isChallengeable: false,
+    upfrontPayment: 7,
     execute: function (game, player, target) {
       if (!target) {
         console.log('No target supplied');
         return;
       }
-      if (player.money < 7) {
-        console.log('Not enough money');
-        return;
-      }
-      player.money -= 7;
       game.removeDelegate(target);
     }
   },
@@ -72,6 +70,7 @@ const Actions = {
     delegate: CardNames.DUKE,
     blockableBy: [],
     isChallengeable: true,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       player.money += 3;
       game.nextTurn();
@@ -81,16 +80,12 @@ const Actions = {
     delegate: CardNames.ASSASSIN,
     blockableBy: [CardNames.CONTESSA],
     isChallengeable: true,
+    upfrontPayment: 3,
     execute: function (game, player, target) {
       if (!target) {
         console.log('No target supplied');
         return;
       }
-      if (player.money < 3) {
-        console.log('Not enough money');
-        return;
-      }
-      player.money -= 3;
       game.removeDelegate(target);
     }
   },
@@ -98,6 +93,7 @@ const Actions = {
     delegate: CardNames.AMBASSADOR,
     blockableBy: [],
     isChallengeable: true,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       game.sentDelegates = [game.deck.pop(), game.deck.pop()];
       game.currentStatusOfPlay = StatusOfPlay.EXCHANGING_DELEGATES;
@@ -108,6 +104,7 @@ const Actions = {
     delegate: CardNames.CAPTAIN,
     blockableBy: [CardNames.CAPTAIN, CardNames.AMBASSADOR],
     isChallengeable: true,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       if (!target) {
         console.log('No target supplied');

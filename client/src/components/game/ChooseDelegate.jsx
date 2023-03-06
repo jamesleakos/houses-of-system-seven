@@ -8,7 +8,11 @@ const ChooseDelegate = ({ delegates, chooseDelegates, chooseNum, actionString })
   const [chosenIndices, setChosenIndices] = React.useState([]);
 
   useEffect(() => {
+    console.log('chosenIndices: ', JSON.stringify(chosenIndices));
+    console.log('chooseNum: ', chooseNum);
     if (chosenIndices.length === chooseNum) {
+      console.log('should be triggering');
+      console.log(delegates.filter((_, index) => chosenIndices.includes(index)));
       chooseDelegates(delegates.filter((_, index) => chosenIndices.includes(index)));
     }
   }, [chosenIndices]);

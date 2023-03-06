@@ -29,5 +29,9 @@
 .waiting-room .hoss-button {
   float: right;
 }
+.waiting-room .hoss-button.disabled {
+  float: right;
+  background-color: gray;
+}
 
 

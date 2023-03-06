@@ -26,7 +26,7 @@ const Game = ({ socket, setGameStarted }) => {
   const [uiState, setUIState] = useState('');
   const [myCurrentAction, setMyCurrentAction] = useState({
     action: '',
-    target: null
+    targetIndex: null
   });
   const [currentAttemptedAction, setCurrentAttemptedAction] = useState({
     action: '',
@@ -37,6 +37,7 @@ const Game = ({ socket, setGameStarted }) => {
     playerIndex: null,
     blockingAsDelegate: ''
   });
+  const [delegatesForExchange, setDelegatesForExchange] = useState([]);
   const [log, setLog] = useState([]);
 
   useEffect(() => {
@@ -101,6 +102,14 @@ const Game = ({ socket, setGameStarted }) => {
       setUIState('discard-delegate');
     });
 
+    socket.on('exchange-delegate-choices', (data) => {
+      console.log('exchange data');
+      console.log(data);
+      setCurrentStatusToText('You must exchange a delegate.');
+      setDelegatesForExchange(data);
+      setUIState('exchange-delegates');
+    });
+
     socket.on('player-voted', (data) => {
       setLog((log) => [...log, 'Player ' + data.playerIndex + ' voted.']);
     });
@@ -131,13 +140,14 @@ const Game = ({ socket, setGameStarted }) => {
   };
 
   const chooseTarget = (target) => {
+    console.log('emitting target: ', target);
     socket.emit('player-action', {
       action: myCurrentAction.action,
-      target: target
+      targetIndex: target
     });
     setMyCurrentAction({
       action: '',
-      target: null
+      targetIndex: null
     });
   };
 
@@ -192,10 +202,10 @@ const Game = ({ socket, setGameStarted }) => {
       return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedBlock} challengeResponse={challengeBlock} />;
     } else if (uiState === 'discard-delegate') {
       return <ChooseDelegate delegates={myPlayer.delegates} chooseDelegates={discardDelegate} chooseNum={1} actionString={'discard'} />;
-    } else if (uiState === 'exchanges-delegate') {
+    } else if (uiState === 'exchange-delegates') {
       return (
         <ChooseDelegate
-          delegates={myPlayer.delegates}
+          delegates={[...myPlayer.delegates, ...delegatesForExchange]}
           chooseDelegates={exhangeDelegates}
           chooseNum={myPlayer.delegates.length}
           actionString={'keep'}

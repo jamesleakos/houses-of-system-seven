@@ -13,7 +13,9 @@ const Actions = {
   income: {
     delegate: 'all',
     blockableBy: [],
+    blockAction: null,
     isChallengeable: false,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       player.money += 1;
       game.nextTurn();
@@ -22,7 +24,9 @@ const Actions = {
   foreign_aid: {
     delegate: 'all',
     blockableBy: [CardNames.DUKE],
+    blockAction: 'block_foreign_aid',
     isChallengeable: false,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       player.money += 2;
       game.nextTurn();
@@ -31,24 +35,23 @@ const Actions = {
   coup: {
     delegate: 'all',
     blockableBy: [],
+    blockAction: null,
     isChallengeable: false,
+    upfrontPayment: 7,
     execute: function (game, player, target) {
       if (!target) {
         console.log('No target supplied');
         return;
       }
-      if (player.money < 7) {
-        console.log('Not enough money');
-        return;
-      }
-      player.money -= 7;
       game.removeDelegate(target);
     }
   },
   tax: {
     delegate: CardNames.DUKE,
     blockableBy: [],
+    blockAction: null,
     isChallengeable: true,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       player.money += 3;
       game.nextTurn();
@@ -57,24 +60,23 @@ const Actions = {
   assassinate: {
     delegate: CardNames.ASSASSIN,
     blockableBy: [CardNames.CONTESSA],
+    blockAction: 'block_assassinate',
     isChallengeable: true,
+    upfrontPayment: 3,
     execute: function (game, player, target) {
       if (!target) {
         console.log('No target supplied');
         return;
       }
-      if (player.money < 3) {
-        console.log('Not enough money');
-        return;
-      }
-      player.money -= 3;
       game.removeDelegate(target);
     }
   },
   exchange: {
     delegate: CardNames.AMBASSADOR,
     blockableBy: [],
+    blockAction: null,
     isChallengeable: true,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       game.sentDelegates = [game.deck.pop(), game.deck.pop()];
       game.currentStatusOfPlay = StatusOfPlay.EXCHANGING_DELEGATES;
@@ -84,7 +86,9 @@ const Actions = {
   steal: {
     delegate: CardNames.CAPTAIN,
     blockableBy: [CardNames.CAPTAIN, CardNames.AMBASSADOR],
+    blockAction: 'block_steal',
     isChallengeable: true,
+    upfrontPayment: 0,
     execute: function (game, player, target) {
       if (!target) {
         console.log('No target supplied');

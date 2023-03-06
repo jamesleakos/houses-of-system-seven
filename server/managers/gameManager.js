@@ -1,6 +1,10 @@
 const Game = require('../game/game.js');
 
 const startGame = async (room, io) => {
+  if (room.players.length < 2 || room.players.length > 6) {
+    throw new Error('Invalid number of players');
+  }
+
   const clients = io.sockets.adapter.rooms.get(room.id);
   const sockets = [...clients].map((id) => io.sockets.sockets.get(id));
 

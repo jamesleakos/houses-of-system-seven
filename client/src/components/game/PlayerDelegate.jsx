@@ -18,7 +18,7 @@ const PlayerDelegate = ({ delegate, index, clickable, onClick, chosen }) => {
     <div
       className={'player-delegate' + (chosen ? ' chosen' : '') + (clickable ? ' clickable' : '')}
       style={{
-        backgroundImage: formatImageLink(constants.Delegates[delegate].url)
+        backgroundImage: formatImageLink(constants.Delegates[delegate]?.url)
       }}
       onClick={handleClick}
     >
