@@ -1,7 +1,9 @@
 // external
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-const connection_url = 'http://54.212.120.93:3000';
+
+// constants
+import { CONNECTION_URL } from '../constants.js';
 
 // css
 import '../styles.css';
@@ -15,7 +17,7 @@ function App() {
   const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
-    const s = io(connection_url, { transport: ['websocket'] });
+    const s = io(CONNECTION_URL, { transport: ['websocket'] });
     setSocket(s);
   }, []);
 

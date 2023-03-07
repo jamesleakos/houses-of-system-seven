@@ -87,3 +87,5 @@ client/dist/*.JPG
 client/dist/*.jpg
 client/dist/*.png
 client/dist/*.jpeg
+
+client/src/network_constants.js
