@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
 // constants
-import { CONNECTION_URL } from '../constants.js';
+import { CONNECTION_URL } from '../network_constants.js';
 
 // css
 import '../styles.css';
