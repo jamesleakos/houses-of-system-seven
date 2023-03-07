@@ -1,6 +1,6 @@
 # The Noble Houses of System Seven
 
-A space themed strategy game in the sytle of the popular board game 'Coup'. Play it at [playsystemseven.com](playsystemseven.com)!
+A space themed strategy game in the sytle of the popular board game 'Coup'. Play it at [playsystemseven.com](http://playsystemseven.com)!
 
 ### Use as a template
 
