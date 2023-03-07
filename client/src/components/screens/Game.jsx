@@ -131,6 +131,10 @@ const Game = ({ socket, setGameStarted }) => {
       setCurrentStatusToText('Game over. ' + data.winner + ' won!');
       setPlayers(data.players);
       setUIState('end-game');
+
+      // modal
+      setModal(true);
+      setModalMessage('Game over. ' + data.winner + ' won!');
     });
 
     socket.on('challenge-result', (data) => {

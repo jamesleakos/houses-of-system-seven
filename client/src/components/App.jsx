@@ -1,7 +1,7 @@
 // external
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-const connection_url = 'http://localhost:3000';
+const connection_url = 'http://54.201.193.215:3000';
 
 // css
 import '../styles.css';
@@ -20,12 +20,8 @@ function App() {
   }, []);
 
   return (
-    <div className='App'>
-      {gameStarted ? (
-        <Game socket={socket} setGameStarted={setGameStarted} />
-      ) : (
-        <Pregame socket={socket} setGameStarted={setGameStarted} />
-      )}
+    <div className="App">
+      {gameStarted ? <Game socket={socket} setGameStarted={setGameStarted} /> : <Pregame socket={socket} setGameStarted={setGameStarted} />}
     </div>
   );
 }
