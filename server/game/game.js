@@ -147,6 +147,9 @@ class Game {
         if (!game.gameOver) return;
         game.startNewGame();
       });
+      playerSocket.on('disconnect', function (data) {
+        game.onPlayerDisconnected(playerSocket);
+      });
     });
   }
 
@@ -406,17 +409,41 @@ class Game {
     let player = this.IDToPlayer[playerSocket.id];
     if (!player) return;
 
-    this.sendToRoom('player-disconnected', player.index);
+    this.sendToRoom('player-disconnected', `${this.players[player.index].name} has disconnected.`);
 
     // check them off as inactive
     player.active = false;
-    // if they're the last one to respond to a block or challenge, set them to pass
-    if (
-      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCKS ||
-      this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_CHALLENGES
-    ) {
+    // kill them off, though in the future we may remove this to let them rejoin
+    player.isAlive = false;
+
+    // if it's their turn, just move on
+    if (player === this.currentPlayer) {
+      this.nextTurn();
+      return;
+    }
+
+    // if they were the target of a action with a blockByTargetOnly option, set them to pass
+    // we'll deal with actually moving on in a second
+    if (this.currentAction.action === null) return; // need this to avoid errors
+    const actionObj = constants.Actions[this.currentAction.action];
+    if (actionObj.onlyTargetBlocks && this.currentAction.target === player) {
+      this.currentAction.blocksComplete = true;
+    }
+
+    // if they were in the middle of stuff
+    if (this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_CHALLENGES) {
       player.voted = true;
       if (this.haveAllPlayersVoted(this.currentAction.player)) {
+        this.resetPlayerVotes();
+        this.nextStep();
+      }
+      return;
+    }
+    if (this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCKS) {
+      player.voted = true;
+      console.log('in the requesting blocks section');
+      if (this.haveAllPlayersVoted(this.currentAction.player) || this.currentAction.target === player) {
+        console.log('made it in here');
         this.resetPlayerVotes();
         this.nextStep();
       }
@@ -442,12 +469,6 @@ class Game {
       this.deck = [...this.deck, ...this.sentDelegates];
       helpers.shuffle(this.deck);
       this.nextStep();
-      return;
-    }
-
-    // if it's their turn, just move on
-    if (player === this.currentPlayer) {
-      this.nextTurn();
       return;
     }
   }

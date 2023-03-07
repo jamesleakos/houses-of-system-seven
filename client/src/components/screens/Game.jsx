@@ -147,6 +147,12 @@ const Game = ({ socket, setGameStarted }) => {
       setLog((log) => [...log, data]);
     });
 
+    socket.on('player-disconnected', (data) => {
+      setLog((log) => [...log, '------------']);
+      setLog((log) => [...log, data]);
+      setLog((log) => [...log, '------------']);
+    });
+
     socket.emit('request-gamestate');
   }, [socket]);
 

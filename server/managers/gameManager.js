@@ -30,7 +30,7 @@ const sendToRoom = (messageType, room_id, data, io) => {
 
 const sendToPlayer = (messageType, data, playerSocketID, io) => {
   const client = io.sockets.sockets.get(playerSocketID);
-  client.emit(messageType, data);
+  if (client) client.emit(messageType, data);
 };
 
 module.exports.startGame = startGame;
