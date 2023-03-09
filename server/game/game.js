@@ -617,7 +617,14 @@ class Game {
       this.deck.push(player.delegates.pop());
       helpers.shuffle(this.deck);
       this.sendToPlayer('player-state', player, player.socket_id);
-      this.nextStep();
+
+      // check to see if the game is over
+      // notably, this will never happen in the previous block, because they already have more than one life
+      if (this.checkForEndOfGame()) {
+        this.endGame();
+      } else {
+        this.nextStep();
+      }
     }
   }
 
