@@ -1,4 +1,6 @@
 require('dotenv').config();
+// THIS IS NEEDED to call the db file even if we don't use the output
+const db = require('./db');
 
 const express = require('express');
 const path = require('path');

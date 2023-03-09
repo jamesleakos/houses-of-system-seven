@@ -1,9 +1,12 @@
 const Game = require('../game/game.js');
+const Tracking = require('../db/controllers/tracking.js');
 
 const startGame = async (room, io) => {
   if (room.players.length < 2 || room.players.length > 6) {
     throw new Error('Invalid number of players');
   }
+  // track the game in the db
+  Tracking.addGame(room.players.map((p) => p.name));
 
   const clients = io.sockets.adapter.rooms.get(room.id);
   const sockets = [...clients].map((id) => io.sockets.sockets.get(id));

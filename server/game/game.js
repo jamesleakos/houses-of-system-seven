@@ -604,15 +604,19 @@ class Game {
   removeDelegate(player) {
     this.sendToRoom('log', `${player.name} lost a delegate`);
     if (player.delegates.length > 1) {
+      // set some state
       this.currentStatusOfPlay = constants.StatusOfPlay.DISCARDING_DELEGATE;
       this.currentDiscardingPlayer = player;
+      // send to room
       this.sendToRoom('status-update', {
-        currentStatusToText: 'Waiting on ' + player.name + ' to discard an influence'
+        currentStatusToText: 'Waiting on ' + player.name + ' to discard a delegate'
       });
       this.sendToPlayer('discard-delegate', {}, player.socket_id);
-      // no next turn, need them to choose a card to discard
+      // don't go to the next turn, need them to choose a card to discard
     } else {
-      this.sendToRoom('log', `${player.name} died!`);
+      this.sendToRoom('log', `${player.name} died!`); // -log
+
+      // remove the player from the game and return their delegate to the deck
       player.isAlive = false;
       this.deck.push(player.delegates.pop());
       helpers.shuffle(this.deck);

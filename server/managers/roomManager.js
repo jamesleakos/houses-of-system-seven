@@ -1,5 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
+const Tracking = require('../db/controllers/tracking.js');
 
+// objs
 let rooms = [];
 const playerToRoom = {};
 
@@ -14,11 +16,14 @@ const getOpenRooms = () => {
 };
 
 const createRoom = (roomname, io) => {
+  // make sure to cleanup
+  cleanupEmptyRooms();
+
   const newRoom = {
     id: uuidv4(),
     name: roomname,
     players: [],
-    started: false,
+    started: false
   };
 
   // if the room ever becomes empty, it should be deleted
@@ -40,6 +45,9 @@ const createRoom = (roomname, io) => {
 };
 
 const addPlayerToRoom = (room, username, playerSocket) => {
+  // track that we added a new player
+  Tracking.addUser(username);
+
   // don't let a player join a room they're already in
   if (room.players.find((p) => p.id === playerSocket.id)) return;
 
@@ -52,7 +60,7 @@ const addPlayerToRoom = (room, username, playerSocket) => {
   // add to new room
   room.players.push({
     id: playerSocket.id,
-    name: username,
+    name: username
   });
   playerToRoom[playerSocket.id] = room;
 };
@@ -65,7 +73,7 @@ const removePlayerFromRoom = (room, playerSocket) => {
   //unsub from room messages
   playerSocket.leave(room.id);
 
-  //
+  // make sure to cleanup
   cleanupEmptyRooms();
 };
 
@@ -80,6 +88,7 @@ const cleanupEmptyRooms = () => {
 
 // new room on player request, player gets added
 const createNewRoomAddPlayer = (roomname, username, playerSocket, io) => {
+  // create room
   const room = createRoom(roomname, io);
   addPlayerToRoom(room, username, playerSocket);
   return room;
