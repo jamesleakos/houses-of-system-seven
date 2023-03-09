@@ -9,6 +9,7 @@ import ChallengeAction from '../game/ChallengeAction.jsx';
 import ChooseDelegate from '../game/ChooseDelegate.jsx';
 import GameOver from '../game/GameOver.jsx';
 import AlertModal from '../game/AlertModal.jsx';
+import RulesModal from '../game/RulesModal.jsx';
 // css
 import './styles/Game.css';
 
@@ -42,6 +43,7 @@ const Game = ({ socket, setGameStarted }) => {
   const [log, setLog] = useState([]);
   const [modalOn, setModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [rulesOn, setRulesOn] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
@@ -323,6 +325,18 @@ const Game = ({ socket, setGameStarted }) => {
 
       {/* modal */}
       {modalOn ? <AlertModal message={modalMessage} setModal={setModal} /> : null}
+      {/* rules */}
+      {rulesOn ? (
+        <RulesModal setRulesOn={setRulesOn} />
+      ) : (
+        <div
+          className="hoss-button"
+          style={{ color: 'black', position: 'fixed', bottom: '10px', left: '10px' }}
+          onClick={() => setRulesOn(true)}
+        >
+          VIEW GUIDE
+        </div>
+      )}
     </div>
   );
 };
