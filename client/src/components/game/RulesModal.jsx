@@ -45,7 +45,7 @@ const RulesModal = ({ setRulesOn }) => {
         <br />
         <div className="action">
           <h3>Tax - Duke's Action</h3>
-          <p>Gain one gold. Cannot be blocked.</p>
+          <p>Gain three gold. Cannot be blocked.</p>
         </div>
         <br />
         <div className="action">
