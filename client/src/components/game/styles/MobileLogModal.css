@@ -1,5 +1,4 @@
-
-.alert-modal {
+.mobile-log-modal {
   position: fixed;
   top: 0;
   width: 100%;
@@ -9,35 +8,28 @@
   color: white;
 }
 
-.alert-modal .interior {
+.mobile-log-modal .interior {
   position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -20%);
-  min-width: 400px;
-  width: 50%;
+  top: 20px;
+  left: 20px;
+  bottom: 20px;
+  right: 20px;
   background-color: #242424;
   border: 1px solid white;
   border-radius: 10px;
   color: white;
-  display: flex;
   justify-content: center;
   align-content: center;
   flex-direction: column;
 }
 
-.mobile .alert-modal .interior {
-  width: 90vw;
-  min-width: 0;
-}
-
-.alert-modal .interior .text {
+.mobile-log-modal .interior .text {
   overflow-y: auto;
   height: calc(100% - 60px);
   margin: 20px 20px 10px 20px;
 }
 
-.alert-modal .exit-text {
+.mobile-log-modal .exit-text {
   color: #999999;
   font-style: italic;
   font-size: .8rem;

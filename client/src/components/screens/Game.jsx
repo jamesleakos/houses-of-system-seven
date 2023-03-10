@@ -10,6 +10,7 @@ import ChooseDelegate from '../game/ChooseDelegate.jsx';
 import GameOver from '../game/GameOver.jsx';
 import AlertModal from '../game/AlertModal.jsx';
 import RulesModal from '../game/RulesModal.jsx';
+import MobileLogModal from '../game/MobileLogModal.jsx';
 // css
 import './styles/Game.css';
 import './styles/MobileGame.css';
@@ -238,38 +239,40 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
   };
 
   const gameAreaContent = () => {
+    if (uiState === 'end-game') {
+      return <GameOver requestNewGame={requestNewGame} />;
+    }
     if (!myPlayer.isAlive) {
       return <div>You are dead.</div>;
     }
-    if (uiState === 'choose-action') {
-      return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} />;
-    } else if (uiState === 'block-action') {
-      return <BlockAction myPlayer={myPlayer} blockAction={currentAttemptedAction} handleBlockResponse={blockResponse} />;
-    } else if (uiState === 'challenge-action') {
-      return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedAction} challengeResponse={challengeResponse} />;
-    } else if (uiState === 'block-challenge-action') {
-      return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedBlock} challengeResponse={challengeBlock} />;
-    } else if (uiState === 'discard-delegate') {
-      return <ChooseDelegate delegates={myPlayer.delegates} chooseDelegates={discardDelegate} chooseNum={1} actionString={'discard'} />;
-    } else if (uiState === 'exchange-delegates') {
-      return (
-        <ChooseDelegate
-          delegates={[...myPlayer.delegates, ...delegatesForExchange]}
-          chooseDelegates={exhangeDelegates}
-          chooseNum={myPlayer.delegates.length}
-          actionString={'keep'}
-        />
-      );
-    } else if (uiState === 'choose-target') {
-      return <div>Choose a player to target</div>;
-    } else if (uiState === 'end-game') {
-      return <GameOver requestNewGame={requestNewGame} />;
-    } else if (uiState === 'waiting') {
-      return <div>Waiting...</div>;
-    } else if (uiState === 'waiting-on-voters') {
-      return <div>Waiting...</div>;
-    } else {
-      return <div>Waiting...</div>;
+    switch (uiState) {
+      case 'choose-action':
+        return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} />;
+      case 'block-action':
+        return <BlockAction myPlayer={myPlayer} blockAction={currentAttemptedAction} handleBlockResponse={blockResponse} />;
+      case 'challenge-action':
+        return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedAction} challengeResponse={challengeResponse} />;
+      case 'block-challenge-action':
+        return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedBlock} challengeResponse={challengeBlock} />;
+      case 'discard-delegate':
+        return <ChooseDelegate delegates={myPlayer.delegates} chooseDelegates={discardDelegate} chooseNum={1} actionString={'discard'} />;
+      case 'exchange-delegates':
+        return (
+          <ChooseDelegate
+            delegates={[...myPlayer.delegates, ...delegatesForExchange]}
+            chooseDelegates={exhangeDelegates}
+            chooseNum={myPlayer.delegates.length}
+            actionString={'keep'}
+          />
+        );
+      case 'choose-target':
+        return <div>Choose a player to target</div>;
+      case 'waiting':
+        return <div>Waiting...</div>;
+      case 'waiting-on-voters':
+        return <div>Waiting...</div>;
+      default:
+        return <div>Waiting...</div>;
     }
   };
 
@@ -393,21 +396,15 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
           </div>
         )}
         {/* log */}
-        {!logOn ? (
+        {logOn ? (
+          <MobileLogModal log={log} setLogOn={setLogOn} />
+        ) : (
           <div
             className="hoss-button"
             style={{ color: 'black', position: 'fixed', bottom: '10px', right: '10px' }}
             onClick={() => setLogOn(true)}
           >
             VIEW LOG
-          </div>
-        ) : (
-          <div className="mobile-log-list" onClick={() => setLogOn(false)}>
-            <div className="interior">
-              {log.map((logItem, index) => {
-                return <p key={index + ''}>{logItem}</p>;
-              })}
-            </div>
           </div>
         )}
       </div>

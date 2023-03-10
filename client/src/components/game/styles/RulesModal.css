@@ -6,7 +6,6 @@
   z-index: 9998;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  padding: 20px;
 }
 
 .rules-modal .interior {
@@ -18,10 +17,21 @@
   background-color: #242424;
   border: 1px solid white;
   border-radius: 10px;
-  padding: 40px;
   color: white;
   justify-content: center;
   align-content: center;
   flex-direction: column;
+}
+
+.rules-modal .interior .text {
   overflow-y: auto;
+  height: calc(100% - 60px);
+  margin: 20px 20px 10px 20px;
+}
+
+.rules-modal .exit-text {
+  color: #999999;
+  font-style: italic;
+  font-size: .8rem;
+  margin: 10px 20px;
 }

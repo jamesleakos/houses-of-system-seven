@@ -1,0 +1,118 @@
+Date : 2023-03-09 20:54:05
+Directory : /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven
+Total : 56 files,  11929 codes, 148 comments, 405 blanks, all 12482 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JSON           |          3 |      9,092 |          0 |          2 |      9,094 |
+| JavaScript     |         13 |      1,096 |         99 |        150 |      1,345 |
+| JavaScript JSX |         20 |      1,060 |         43 |        148 |      1,251 |
+| CSS            |         18 |        658 |          4 |         92 |        754 |
+| HTML           |          1 |         15 |          2 |          5 |         22 |
+| Markdown       |          1 |          8 |          0 |          8 |         16 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                     | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                        |         56 |     11,929 |        148 |        405 |     12,482 |
+| . (Files)                                                                                                                                |          6 |      9,146 |          0 |         13 |      9,159 |
+| client                                                                                                                                   |         40 |      1,868 |         49 |        249 |      2,166 |
+| client/dist                                                                                                                              |          1 |         15 |          2 |          5 |         22 |
+| client/src                                                                                                                               |         39 |      1,853 |         47 |        244 |      2,144 |
+| client/src (Files)                                                                                                                       |          2 |         34 |          2 |          6 |         42 |
+| client/src/components                                                                                                                    |         36 |      1,684 |         45 |        234 |      1,963 |
+| client/src/components (Files)                                                                                                            |          1 |         34 |          6 |          8 |         48 |
+| client/src/components/game                                                                                                               |         19 |        859 |         21 |         99 |        979 |
+| client/src/components/game (Files)                                                                                                       |         10 |        469 |         20 |         54 |        543 |
+| client/src/components/game/styles                                                                                                        |          9 |        390 |          1 |         45 |        436 |
+| client/src/components/pregame                                                                                                            |         12 |        282 |          5 |         56 |        343 |
+| client/src/components/pregame/EnterNameRoom                                                                                              |          2 |         85 |          1 |         17 |        103 |
+| client/src/components/pregame/EnterNameRoom (Files)                                                                                      |          1 |         30 |          1 |          6 |         37 |
+| client/src/components/pregame/EnterNameRoom/styles                                                                                       |          1 |         55 |          0 |         11 |         66 |
+| client/src/components/pregame/Lobby                                                                                                      |          6 |        113 |          2 |         20 |        135 |
+| client/src/components/pregame/Lobby (Files)                                                                                              |          3 |         54 |          1 |         13 |         68 |
+| client/src/components/pregame/Lobby/styles                                                                                               |          3 |         59 |          1 |          7 |         67 |
+| client/src/components/pregame/WaitingRoom                                                                                                |          4 |         84 |          2 |         19 |        105 |
+| client/src/components/pregame/WaitingRoom (Files)                                                                                        |          2 |         44 |          2 |          8 |         54 |
+| client/src/components/pregame/WaitingRoom/styles                                                                                         |          2 |         40 |          0 |         11 |         51 |
+| client/src/components/screens                                                                                                            |          4 |        509 |         13 |         71 |        593 |
+| client/src/components/screens (Files)                                                                                                    |          2 |        424 |         13 |         57 |        494 |
+| client/src/components/screens/styles                                                                                                     |          2 |         85 |          0 |         14 |         99 |
+| client/src/game_helpers                                                                                                                  |          1 |        135 |          0 |          4 |        139 |
+| server                                                                                                                                   |         10 |        915 |         99 |        143 |      1,157 |
+| server (Files)                                                                                                                           |          1 |         16 |          4 |          6 |         26 |
+| server/db                                                                                                                                |          3 |         48 |          0 |         14 |         62 |
+| server/db (Files)                                                                                                                        |          1 |          9 |          0 |          5 |         14 |
+| server/db/controllers                                                                                                                    |          1 |         24 |          0 |          4 |         28 |
+| server/db/models                                                                                                                         |          1 |         15 |          0 |          5 |         20 |
+| server/game                                                                                                                              |          3 |        727 |         64 |         83 |        874 |
+| server/ioHandlers                                                                                                                        |          1 |         36 |          4 |         13 |         53 |
+| server/managers                                                                                                                          |          2 |         88 |         27 |         27 |        142 |
++------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                                                                 | language       | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/.prettierrc                                                          | JSON           |          7 |          0 |          0 |          7 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/README.md                                                            | Markdown       |          8 |          0 |          8 |         16 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/babel.config.js                                                      | JavaScript     |          3 |          0 |          1 |          4 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/dist/index.html                                               | HTML           |         15 |          2 |          5 |         22 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/App.jsx                                        | JavaScript JSX |         34 |          6 |          8 |         48 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/AlertModal.jsx                            | JavaScript JSX |         12 |          1 |          4 |         17 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/BlockAction.jsx                           | JavaScript JSX |         63 |          2 |          8 |         73 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/ChallengeAction.jsx                       | JavaScript JSX |         26 |          2 |          4 |         32 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/ChooseAction.jsx                          | JavaScript JSX |        167 |          9 |          9 |        185 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/ChooseDelegate.jsx                        | JavaScript JSX |         43 |          1 |          7 |         51 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/GameOver.jsx                              | JavaScript JSX |         17 |          1 |          4 |         22 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/MyPlayerTile.jsx                          | JavaScript JSX |         25 |          1 |          4 |         30 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/PlayerDelegate.jsx                        | JavaScript JSX |         24 |          1 |          6 |         31 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/PlayerTile.jsx                            | JavaScript JSX |         26 |          1 |          4 |         31 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/RulesModal.jsx                            | JavaScript JSX |         66 |          1 |          4 |         71 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/AlertModal.css                     | CSS            |         30 |          0 |          3 |         33 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/BlockAction.css                    | CSS            |         47 |          0 |          6 |         53 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/ChallengeAction.css                | CSS            |         46 |          0 |          4 |         50 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/ChooseAction.css                   | CSS            |         66 |          1 |          8 |         75 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/ChooseDelegate.css                 | CSS            |         44 |          0 |          6 |         50 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/GameOver.css                       | CSS            |         29 |          0 |          2 |         31 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/MyPlayerTile.css                   | CSS            |         57 |          0 |          7 |         64 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/PlayerTile.css                     | CSS            |         45 |          0 |          7 |         52 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/game/styles/RulesModal.css                     | CSS            |         26 |          0 |          2 |         28 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/EnterNameRoom/EnterNameRoom.jsx        | JavaScript JSX |         30 |          1 |          6 |         37 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/EnterNameRoom/styles/EnterNameRoom.css | CSS            |         55 |          0 |         11 |         66 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/Lobby/Lobby.jsx                        | JavaScript JSX |         25 |          1 |          5 |         31 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/Lobby/PlayerItem.jsx                   | JavaScript JSX |         10 |          0 |          4 |         14 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/Lobby/RoomTile.jsx                     | JavaScript JSX |         19 |          0 |          4 |         23 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/Lobby/styles/Lobby.css                 | CSS            |         31 |          0 |          4 |         35 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/Lobby/styles/PlayerItem.css            | CSS            |          4 |          0 |          0 |          4 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/Lobby/styles/RoomTile.css              | CSS            |         24 |          1 |          3 |         28 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/WaitingRoom/PlayerTile.jsx             | JavaScript JSX |         10 |          0 |          4 |         14 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/WaitingRoom/WaitingRoom.jsx            | JavaScript JSX |         34 |          2 |          4 |         40 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/WaitingRoom/styles/PlayerTile.css      | CSS            |          6 |          0 |          2 |          8 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/pregame/WaitingRoom/styles/WaitingRoom.css     | CSS            |         34 |          0 |          9 |         43 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/screens/Game.jsx                               | JavaScript JSX |        368 |         11 |         42 |        421 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/screens/Pregame.jsx                            | JavaScript JSX |         56 |          2 |         15 |         73 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/screens/styles/Game.css                        | CSS            |         82 |          0 |         14 |         96 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/components/screens/styles/MobileGame.css                  | CSS            |          3 |          0 |          0 |          3 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/game_helpers/constants.js                                 | JavaScript     |        135 |          0 |          4 |        139 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/index.jsx                                                 | JavaScript JSX |          5 |          0 |          2 |          7 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/client/src/styles.css                                                | CSS            |         29 |          2 |          4 |         35 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/package-lock.json                                                    | JSON           |      9,046 |          0 |          1 |      9,047 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/package.json                                                         | JSON           |         39 |          0 |          1 |         40 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/db/controllers/tracking.js                                    | JavaScript     |         24 |          0 |          4 |         28 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/db/index.js                                                   | JavaScript     |          9 |          0 |          5 |         14 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/db/models/Tracking.js                                         | JavaScript     |         15 |          0 |          5 |         20 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/game/constants.js                                             | JavaScript     |        134 |          0 |          5 |        139 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/game/game.js                                                  | JavaScript     |        530 |         61 |         68 |        659 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/game/gameHelpers.js                                           | JavaScript     |         63 |          3 |         10 |         76 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/index.js                                                      | JavaScript     |         16 |          4 |          6 |         26 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/ioHandlers/playerHandler.js                                   | JavaScript     |         36 |          4 |         13 |         53 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/managers/gameManager.js                                       | JavaScript     |         31 |          1 |          8 |         40 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/server/managers/roomManager.js                                       | JavaScript     |         57 |         26 |         19 |        102 |
+| /Users/jamesleakos/Documents/GameDevelopment/houses-of-system-seven/webpack.config.js                                                    | JavaScript     |         43 |          0 |          2 |         45 |
+| Total                                                                                                                                    |                |     11,929 |        148 |        405 |     12,482 |
++------------------------------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
