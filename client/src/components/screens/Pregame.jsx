@@ -6,7 +6,7 @@ import EnterNameRoom from '../pregame/EnterNameRoom/EnterNameRoom.jsx';
 import Lobby from '../pregame/Lobby/Lobby.jsx';
 import WaitingRoom from '../pregame/WaitingRoom/WaitingRoom.jsx';
 
-const Pregame = ({ socket, setGameStarted }) => {
+const Pregame = ({ socket, setGameStarted, isMobile }) => {
   const [rooms, setRooms] = useState([]);
   const [username, setUsername] = useState('');
   const [myRoomID, setMyRoomID] = useState(null);
@@ -59,11 +59,11 @@ const Pregame = ({ socket, setGameStarted }) => {
   return (
     <div>
       {username === '' ? (
-        <EnterNameRoom setUsername={setUsername} />
+        <EnterNameRoom setUsername={setUsername} isMobile={isMobile} />
       ) : !!rooms.find((r) => r.id === myRoomID) ? (
-        <WaitingRoom room={rooms.find((r) => r.id === myRoomID)} leaveRoom={leaveRoom} startGame={startGame} />
+        <WaitingRoom room={rooms.find((r) => r.id === myRoomID)} leaveRoom={leaveRoom} startGame={startGame} isMobile={isMobile} />
       ) : (
-        <Lobby rooms={rooms} createRoom={createRoom} joinRoom={joinRoom} />
+        <Lobby rooms={rooms} createRoom={createRoom} joinRoom={joinRoom} isMobile={isMobile} />
       )}
     </div>
   );

@@ -23,6 +23,17 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
 
   const [actionObj, setActionObj] = useState(Constants.Actions[blockAction.action]);
 
+  const [twoCols, setTwoCols] = useState(window.innerWidth > 1000);
+  function handleWindowSizeChange() {
+    setTwoCols(window.innerWidth > 1000);
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    };
+  }, []);
+
   return (
     <div className="block-action">
       {myPlayer.index === blockAction.playerIndex || (actionObj.onlyTargetBlocks && myPlayer.index !== blockAction.targetIndex) ? (
@@ -31,11 +42,11 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
         <div>
           {/* <div>{parseAction(blockAction)}</div> */}
           <div className="block-button-area">
-            {actionObj?.blockableBy.map((delegate) => {
+            {actionObj?.blockableBy.map((delegate, index) => {
               return (
                 <div
                   className="block-button"
-                  style={{ backgroundImage: `url('${Constants.Delegates[delegate].url}')` }}
+                  style={{ backgroundImage: `url('${Constants.Delegates[delegate].url}')`, gridColumn: twoCols ? (index % 2) + 1 : 1 }}
                   onClick={() => handleBlockResponse({ blocking: true, delegate: delegate })}
                   key={delegate}
                 >

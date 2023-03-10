@@ -23,6 +23,10 @@
   background-size: cover;
 }
 
+.mobile.challenge-button {
+  height: 200px;
+}
+
 .challenge-button h3 {
   margin-top: 10px;
   font-size: 1.5rem;

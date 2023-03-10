@@ -4,9 +4,9 @@ import RoomTile from './RoomTile.jsx';
 
 import './styles/Lobby.css';
 
-const Lobby = ({ rooms, createRoom, joinRoom }) => {
+const Lobby = ({ rooms, createRoom, joinRoom, isMobile }) => {
   return (
-    <div className="lobby">
+    <div className={'lobby' + (isMobile ? ' mobile' : '')}>
       <div className="lobby-bar">
         <h1 className="lobby-title">Open Rooms</h1>
         <div className="new-room-button hoss-button" onClick={createRoom}>

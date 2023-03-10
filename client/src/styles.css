@@ -8,6 +8,7 @@ body {
   /* font-family: var(--body-text-font);
   background-color: var(--background-color-light-main); */
   font-family: 'Exo 2', sans-serif;
+  overflow-x: clip;
 }
 
 .hoss-button {

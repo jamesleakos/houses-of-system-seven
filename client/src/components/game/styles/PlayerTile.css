@@ -9,6 +9,12 @@
   transition: 0.5s ease;
 }
 
+.game-player-tile.mobile {
+  width: 40vw;
+  height: 50px;
+  display: inline-block;
+}
+
 .game-player-tile.dead {
   border: 1px solid red;
   color: red;

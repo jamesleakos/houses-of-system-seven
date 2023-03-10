@@ -34,4 +34,9 @@
   background-color: gray;
 }
 
+.waiting-room.mobile .hoss-button.leave {
+  float: left;
+  margin-left: 0;
+}
+
 

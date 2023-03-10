@@ -1,8 +1,19 @@
+.desktop .choose-delegates .player-delegates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media screen and (max-width: 1000px) {
+  .desktop .choose-delegates .player-delegates {
+    grid-template-columns: 1fr;
+  }
+}
+
 .choose-delegates .player-delegate {
   display: inline-block;
   text-align: center;
   margin: 5px;
-  width: 200px;
   height: 220px;
   background-position: center;
   background-repeat: no-repeat;
@@ -11,6 +22,16 @@
   box-shadow: 0 0 10px white;
   cursor: pointer;
   transition: 0.5s ease;
+}
+
+.mobile .choose-delegates .player-delegates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mobile .choose-delegates .player-delegate {
+  height: 40vw;
 }
 
 .choose-delegates .player-delegate:hover {

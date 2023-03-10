@@ -38,6 +38,7 @@ const ChooseDelegate = ({ delegates, chooseDelegates, chooseNum, actionString })
               onClick={toggleChosen}
               clickable={true}
               chosen={chosenIndices.includes(index)}
+              style={{ gridColumn: (index % 2) + 1 }}
             />
           );
         })}

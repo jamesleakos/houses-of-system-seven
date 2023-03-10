@@ -1,9 +1,20 @@
+.desktop .block-button-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media screen and (max-width: 1000px) {
+  .desktop .block-button-area {
+    grid-template-columns: 1fr;
+  }
+}
+
 .block-button {
   position: relative;
   display: inline-block;
   vertical-align: top;
   height: 200px;
-  width: 200px;
   margin: 10px;
   padding: 3px;
   border: 1px solid grey;
@@ -17,6 +28,10 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.mobile .block-button {
+  width: 90vw;
 }
 
 .block-button h3 {

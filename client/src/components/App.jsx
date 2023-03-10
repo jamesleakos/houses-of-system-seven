@@ -21,9 +21,25 @@ function App() {
     setSocket(s);
   }, []);
 
+  // for mobile vs desktop
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  function handleWindowSizeChange() {
+    setIsMobile(window.innerWidth < 768);
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    };
+  }, []);
+
   return (
     <div className="App">
-      {gameStarted ? <Game socket={socket} setGameStarted={setGameStarted} /> : <Pregame socket={socket} setGameStarted={setGameStarted} />}
+      {gameStarted ? (
+        <Game socket={socket} setGameStarted={setGameStarted} isMobile={isMobile} />
+      ) : (
+        <Pregame socket={socket} setGameStarted={setGameStarted} isMobile={isMobile} />
+      )}
     </div>
   );
 }

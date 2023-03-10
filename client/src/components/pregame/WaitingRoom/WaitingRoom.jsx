@@ -5,14 +5,14 @@ import React from 'react';
 import PlayerTile from './PlayerTile.jsx';
 import './styles/WaitingRoom.css';
 
-const WaitingRoom = ({ room, leaveRoom, startGame }) => {
+const WaitingRoom = ({ room, leaveRoom, startGame, isMobile }) => {
   const validNumPlayers = function () {
     return room.players.length >= 2 && room.players.length <= 6;
   };
   return (
-    <div className="waiting-room">
+    <div className={'waiting-room' + (isMobile ? ' mobile' : '')}>
       <div className="waiting-room-bar">
-        <h3 className="waiting-room-title">{room.name}</h3>
+        {!isMobile ? <h3 className="waiting-room-title">{room.name}</h3> : null}
         <div
           className={validNumPlayers() ? 'hoss-button' : 'hoss-button disabled'}
           onClick={() => {
@@ -23,7 +23,7 @@ const WaitingRoom = ({ room, leaveRoom, startGame }) => {
         >
           {room.players.length >= 2 && room.players.length <= 6 ? 'START GAME' : '2 - 6 PLAYERS'}
         </div>
-        <div className="hoss-button" onClick={leaveRoom}>
+        <div className="hoss-button leave" onClick={leaveRoom}>
           LEAVE ROOM
         </div>
       </div>

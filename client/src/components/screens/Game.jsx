@@ -12,8 +12,9 @@ import AlertModal from '../game/AlertModal.jsx';
 import RulesModal from '../game/RulesModal.jsx';
 // css
 import './styles/Game.css';
+import './styles/MobileGame.css';
 
-const Game = ({ socket, setGameStarted }) => {
+const Game = ({ socket, setGameStarted, isMobile }) => {
   const [players, setPlayers] = useState([]);
   const [currentStatusToText, setCurrentStatusToText] = useState('');
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
@@ -272,7 +273,7 @@ const Game = ({ socket, setGameStarted }) => {
     }
   };
 
-  const playerTile = (player, index) => {
+  const playerTile = (player, index, displayIndex) => {
     if (myPlayer.index === index) {
       return (
         <MyPlayerTile
@@ -280,6 +281,7 @@ const Game = ({ socket, setGameStarted }) => {
           player={myPlayer}
           isCurrentPlayer={index === currentPlayerIndex}
           choosingTarget={uiState === 'choose-target'}
+          isMobile={isMobile}
         />
       );
     } else {
@@ -290,55 +292,129 @@ const Game = ({ socket, setGameStarted }) => {
           isCurrentPlayer={index === currentPlayerIndex}
           choosableTarget={uiState === 'choose-target' && player.isAlive}
           handleClick={chooseTarget}
+          isMobile={isMobile}
+          displayIndex={displayIndex}
         />
       );
     }
   };
 
-  return (
-    <div className="game-screen">
-      <div className="wrapper">
-        <div className="status-bar">
-          <h3 className="status-of-play">{'STATUS: ' + currentStatusToText}</h3>
-        </div>
-        <div className="game-area">
-          <div className="player-list" style={{ gridColumn: 1 }}>
-            <h3 className="players-title">Players</h3>
-            {players.map((player, index) => {
-              return playerTile(player, index);
-            })}
+  const Desktop = () => {
+    return (
+      <div className="game-screen desktop">
+        <div className="wrapper">
+          <div className="status-bar">
+            <h3 className="status-of-play">{'STATUS: ' + currentStatusToText}</h3>
           </div>
+          <div className="game-area">
+            <div className="player-list" style={{ gridColumn: 1 }}>
+              <h3 className="players-title">Players</h3>
+              {players.map((player, index) => {
+                return playerTile(player, index);
+              })}
+            </div>
 
-          <div className="play-area" style={{ gridColumn: 2 }}>
-            {gameAreaContent()}
+            <div className="play-area" style={{ gridColumn: 2 }}>
+              {gameAreaContent()}
+            </div>
+            <div className="log-area" style={{ gridColumn: 3 }}>
+              <h3>Log</h3>
+              <div className="log-list">
+                {log.map((logItem, index) => {
+                  return <p key={index + ''}>{logItem}</p>;
+                })}
+              </div>
+            </div>
           </div>
-          <div className="log-area" style={{ gridColumn: 3 }}>
-            <h3>Log</h3>
-            <div className="log-list">
+        </div>
+
+        {/* modal */}
+        {modalOn ? <AlertModal message={modalMessage} setModal={setModal} /> : null}
+        {/* rules */}
+        {rulesOn ? (
+          <RulesModal setRulesOn={setRulesOn} />
+        ) : (
+          <div
+            className="hoss-button"
+            style={{ color: 'black', position: 'fixed', bottom: '10px', left: '10px' }}
+            onClick={() => setRulesOn(true)}
+          >
+            VIEW GUIDE
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const Mobile = () => {
+    const [logOn, setLogOn] = useState(false);
+    const [mapOrder, setMapOrder] = useState(
+      players.map((_, index) => (index + myPlayer?.index) % players.length).filter((_, index) => index !== 0)
+    );
+    useEffect(() => {
+      if (!myPlayer.index) return;
+      const temp = players.map((_, index) => (index + myPlayer.index) % players.length).filter((_, index) => index !== 0);
+      setMapOrder(temp);
+    }, [players, myPlayer]);
+
+    return (
+      <div className="game-screen mobile">
+        <div className="wrapper">
+          <div className="status-bar">
+            <h3 className="status-of-play">{'STATUS: ' + currentStatusToText}</h3>
+          </div>
+          <div className="mobile-game-area">
+            {playerTile(players[myPlayer.index], myPlayer.index, 0)}
+            <div className="player-list">
+              {mapOrder.map((playersIndex, displayIndex) => {
+                return playerTile(players[playersIndex], playersIndex, displayIndex);
+              })}
+            </div>
+
+            <div className="play-area">
+              <h3>Play Area</h3>
+              {gameAreaContent()}
+            </div>
+          </div>
+        </div>
+
+        {/* modal */}
+        {modalOn ? <AlertModal message={modalMessage} setModal={setModal} /> : null}
+        {/* rules */}
+        {rulesOn ? (
+          <RulesModal setRulesOn={setRulesOn} />
+        ) : (
+          <div
+            className="hoss-button"
+            style={{ color: 'black', position: 'fixed', bottom: '10px', left: '10px' }}
+            onClick={() => setRulesOn(true)}
+          >
+            VIEW GUIDE
+          </div>
+        )}
+        {/* log */}
+        {!logOn ? (
+          <div
+            className="hoss-button"
+            style={{ color: 'black', position: 'fixed', bottom: '10px', right: '10px' }}
+            onClick={() => setLogOn(true)}
+          >
+            VIEW LOG
+          </div>
+        ) : (
+          <div className="mobile-log-list" onClick={() => setLogOn(false)}>
+            <div className="interior">
               {log.map((logItem, index) => {
                 return <p key={index + ''}>{logItem}</p>;
               })}
             </div>
           </div>
-        </div>
+        )}
       </div>
+    );
+  };
 
-      {/* modal */}
-      {modalOn ? <AlertModal message={modalMessage} setModal={setModal} /> : null}
-      {/* rules */}
-      {rulesOn ? (
-        <RulesModal setRulesOn={setRulesOn} />
-      ) : (
-        <div
-          className="hoss-button"
-          style={{ color: 'black', position: 'fixed', bottom: '10px', left: '10px' }}
-          onClick={() => setRulesOn(true)}
-        >
-          VIEW GUIDE
-        </div>
-      )}
-    </div>
-  );
+  return <div>{isMobile ? <Mobile /> : <Desktop />}</div>;
 };
 
 export default Game;

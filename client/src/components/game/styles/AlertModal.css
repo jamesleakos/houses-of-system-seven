@@ -26,3 +26,8 @@
   align-content: center;
   flex-direction: column;
 }
+
+.mobile .alert-modal .interior {
+  width: 200px;
+  min-width: 0;
+}
