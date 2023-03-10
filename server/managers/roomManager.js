@@ -26,21 +26,7 @@ const createRoom = (roomname, io) => {
     started: false
   };
 
-  // if the room ever becomes empty, it should be deleted
   rooms.push(newRoom);
-  // let checkEmptyInterval = setInterval(() => {
-  //   let toDelete = true;
-  //   newRoom.players.forEach((player) => {
-  //     if (!!io.sockets.sockets.get(player.id)) toDelete = false;
-  //   });
-  //   if (toDelete) {
-  //     const index = rooms.indexOf(newRoom);
-  //     if (index !== -1) rooms = rooms.splice(index, 1);
-  //     clearInterval(checkEmptyInterval);
-  //     console.log('room deleted');
-  //   }
-  // }, 10000);
-
   return newRoom;
 };
 

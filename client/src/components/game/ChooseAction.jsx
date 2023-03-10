@@ -24,9 +24,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
   }, [myPlayer]);
 
   const handleClick = (action) => {
-    console.log('handle lcick');
     if (!actionsOpen[action]) return;
-    console.log('passed open');
     takeAction(action);
   };
 

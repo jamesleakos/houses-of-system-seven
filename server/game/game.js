@@ -31,7 +31,6 @@ class Game {
 
   // starting game
   startNewGame() {
-    console.log('starting new game');
     this.gameOver = false;
     this.currentPlayer = this.players[0];
     this.currentPlayer.canAct = true;
@@ -122,7 +121,6 @@ class Game {
     const game = this;
     playerSockets.map((playerSocket) => {
       playerSocket.on('player-action', function (data) {
-        console.log('player action');
         game.playerTakesAction(playerSocket, data);
       });
       playerSocket.on('player-challenge', function (data) {
@@ -161,8 +159,6 @@ class Game {
     // dead men tell no tales
     if (!player.isAlive) return;
 
-    console.log('passed intro checks');
-
     // record the action data
     const action = data.action;
     let target = null;
@@ -171,10 +167,6 @@ class Game {
       if (!target) return;
       if (!target.isAlive) return;
     }
-    console.log('target: ' + target);
-    console.log('targetIndex: ' + data.targetIndex);
-
-    console.log(action);
 
     this.currentAction = {
       player: player,
@@ -189,11 +181,8 @@ class Game {
 
     // make the upfront payment
     const actionObj = constants.Actions[this.currentAction.action];
-    console.log(actionObj);
     if (actionObj.upfrontPayment) {
-      console.log('has upfront payment');
       if (player.money >= actionObj.upfrontPayment) {
-        console.log('deducting upfront payment');
         player.money -= actionObj.upfrontPayment;
       } else {
         this.currentAction.canceled = true;
@@ -217,13 +206,10 @@ class Game {
 
     // onto challenge response logic
     if (data.amChallenging) {
-      console.log('player is challenging');
-
       this.currentAction.challengesComplete = true;
       this.resetPlayerVotes();
       const challengeResult = this.resolveChallenge(this.currentAction.player, this.currentAction.action);
       if (challengeResult.wasSuccessful) {
-        console.log('challenge was successful');
         this.sendToRoom('challenge-result', {
           wasSuccessful: true,
           challengingPlayer: player.index,
@@ -232,7 +218,6 @@ class Game {
         this.currentAction.canceled = true;
         this.removeDelegate(this.currentPlayer);
       } else {
-        console.log('challenge was not successful');
         this.sendToRoom('challenge-result', {
           wasSuccessful: false,
           role: challengeResult.role,
@@ -242,15 +227,12 @@ class Game {
         this.removeDelegate(player);
       }
     } else {
-      console.log('player is not challenging');
       player.voted = true;
       if (this.haveAllPlayersVoted(this.currentAction.player)) {
-        console.log('all players have voted');
         this.currentAction.challengesComplete = true;
         this.resetPlayerVotes();
         this.nextStep();
       } else {
-        console.log('not all players have voted yet');
         this.sendToRoom('player-voted', player.index);
       }
     }
@@ -274,7 +256,6 @@ class Game {
     if (actionObj.onlyTargetBlocks && player !== this.currentAction.target) return;
 
     if (data.amBlocking && actionObj.blockableBy.includes(data.blockingAs)) {
-      console.log(`${player.name} is blocking as the ${data.blockingAs}`);
       // update the current action object
       this.currentAction.blocksComplete = true;
       this.resetPlayerVotes();
@@ -290,7 +271,6 @@ class Game {
         currentStatusToText: this.currentStatusToText
       });
     } else {
-      console.log(`${player.name} is not blocking`);
       player.voted = true;
       if (this.haveAllPlayersVoted(this.currentAction.player) || actionObj.onlyTargetBlocks) {
         this.currentAction.blocksComplete = true;
@@ -316,19 +296,12 @@ class Game {
 
       // resolve the challenge
       const challengeResult = this.resolveBlockChallenge(this.currentAction.blocker, this.currentAction.action);
-      console.log('this.currentAction.blocker: ');
-      console.log(this.currentAction.blocker);
-      console.log('this.currentAction.action: ' + this.currentAction.action);
-      console.log('challengeResult: ');
-      console.log(challengeResult);
       if (challengeResult.wasSuccessful) {
-        console.log('challenge was successful');
         this.sendToRoom('challenge-result', {
           wasSuccessful: true
         });
         this.removeDelegate(this.currentAction.blocker);
       } else {
-        console.log('challenge was not successful');
         this.sendToRoom('challenge-result', {
           wasSuccessful: false,
           role: challengeResult.role
@@ -441,9 +414,7 @@ class Game {
     }
     if (this.currentStatusOfPlay === constants.StatusOfPlay.REQUESTING_BLOCKS) {
       player.voted = true;
-      console.log('in the requesting blocks section');
       if (this.haveAllPlayersVoted(this.currentAction.player) || this.currentAction.target === player) {
-        console.log('made it in here');
         this.resetPlayerVotes();
         this.nextStep();
       }
@@ -507,7 +478,6 @@ class Game {
 
     // then, we check if we've done our blocks
     if (actionObj.blockableBy.length > 0 && !this.currentAction.blocksComplete) {
-      console.log('requesting blocks');
       this.currentStatusToText = `${this.currentAction.player.name} is using ${this.currentAction.action}${
         !!this.currentAction.target ? ' on ' + this.currentAction.target.name : ''
       } - Requesting Blocks`;

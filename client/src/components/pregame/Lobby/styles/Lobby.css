@@ -1,6 +1,10 @@
+:root {
+  --top-padding: 30px;
+}
+
 .lobby {
-  padding-top: 30px;
-  min-height: 100vh;
+  padding-top: var(--top-padding);
+  min-height: calc(100vh - var(--top-padding));
   background-image: url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/council_2_-xtCInoWU.png');  
   background-attachment: fixed;
   background-position: bottom;

@@ -116,8 +116,6 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
     });
 
     socket.on('exchange-delegate-choices', (data) => {
-      console.log('exchange data');
-      console.log(data);
       setCurrentStatusToText('You must exchange a delegate.');
       setDelegatesForExchange(data);
       setUIState('exchange-delegates');
@@ -173,14 +171,12 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
       return;
     }
     // else
-    console.log('emitting');
     socket.emit('player-action', {
       action: action
     });
   };
 
   const chooseTarget = (target) => {
-    console.log('emitting target: ', target);
     socket.emit('player-action', {
       action: myCurrentAction.action,
       targetIndex: target
@@ -234,7 +230,6 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
   };
 
   const requestNewGame = () => {
-    console.log('asking for new game');
     socket.emit('request-new-game');
   };
 

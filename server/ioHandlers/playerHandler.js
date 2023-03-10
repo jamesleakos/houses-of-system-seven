@@ -26,7 +26,6 @@ module.exports = (io, player) => {
   };
 
   const startGame = (data) => {
-    console.log('start the game');
     const room = roomMan.getRoom(data.room_id);
     // make sure this is a player actually in the room!
     if (!room.players.find((p) => p.id === player.id)) return;
