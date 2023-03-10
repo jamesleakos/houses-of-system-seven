@@ -4,7 +4,7 @@ import './styles/PlayerItem.css';
 
 const RoomTilePlayerItem = ({ player }) => {
   return (
-    <div className='room-tile-player-item'>
+    <div className="room-tile-player-item">
       <p>{player.name}</p>
     </div>
   );

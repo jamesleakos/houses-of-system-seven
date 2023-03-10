@@ -46,7 +46,7 @@ const createRoom = (roomname, io) => {
 
 const addPlayerToRoom = (room, username, playerSocket) => {
   // track that we added a new player
-  Tracking.addUser(username);
+  Tracking.addUser(username.slice(0, 10));
 
   // don't let a player join a room they're already in
   if (room.players.find((p) => p.id === playerSocket.id)) return;
@@ -60,7 +60,7 @@ const addPlayerToRoom = (room, username, playerSocket) => {
   // add to new room
   room.players.push({
     id: playerSocket.id,
-    name: username
+    name: username.slice(0, 10)
   });
   playerToRoom[playerSocket.id] = room;
 };

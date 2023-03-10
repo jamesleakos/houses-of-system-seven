@@ -15,7 +15,7 @@ const MyPlayerTile = ({ player, isCurrentPlayer, choosingTarget, isMobile }) => 
       }
     >
       <div className="player-tile-info-area">
-        <h3 className="player-name">{player.name + ' - YOUR PLAYER'}</h3>
+        <h3 className="player-name">{player.name + (isMobile ? ' - YOUR PLAYER' : ' - YOU')}</h3>
         <p>{'Gold: ' + player.money}</p>
       </div>
       {!isMobile ? <p>Your delegates:</p> : null}
