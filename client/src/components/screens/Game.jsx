@@ -372,7 +372,7 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
             </div>
 
             <div className="play-area">
-              <h3>Play Area</h3>
+              <h3 style={{ borderBottom: '1px solid white', marginBottom: '10px' }}>Play Area</h3>
               {gameAreaContent()}
             </div>
           </div>

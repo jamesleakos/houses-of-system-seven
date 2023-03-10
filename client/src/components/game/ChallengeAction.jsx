@@ -14,18 +14,10 @@ const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
           <div>
             <div>Challenge or Pass...</div>
             <div className="challenge-button-area">
-              <div
-                className="challenge-button challenge hoss-button"
-                style={{ gridColumn: 1, backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coupball_XTHjEFn6Y.png')" }}
-                onClick={() => challengeResponse(true)}
-              >
+              <div className="challenge-button challenge hoss-button" onClick={() => challengeResponse(true)}>
                 <h3>Challenge</h3>
               </div>
-              <div
-                className="challenge-button pass hoss-button"
-                style={{ gridColumn: 3, backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')" }}
-                onClick={() => challengeResponse(false)}
-              >
+              <div className="challenge-button pass hoss-button" onClick={() => challengeResponse(false)}>
                 <h3>Pass</h3>
               </div>
             </div>
