@@ -3,7 +3,7 @@ import React from 'react';
 // internal
 import './styles/ChallengeAction.css';
 
-const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
+const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse, playHover, playClick }) => {
   return (
     <div className="challenge-action">
       {
@@ -14,10 +14,24 @@ const ChallengeAction = ({ myPlayer, challengeAction, challengeResponse }) => {
           <div>
             <div>Challenge or Pass...</div>
             <div className="challenge-button-area">
-              <div className="challenge-button challenge hoss-button" onClick={() => challengeResponse(true)}>
+              <div
+                className="challenge-button challenge hoss-button"
+                onMouseEnter={playHover}
+                onClick={() => {
+                  playClick();
+                  challengeResponse(true);
+                }}
+              >
                 <h3>Challenge</h3>
               </div>
-              <div className="challenge-button pass hoss-button" onClick={() => challengeResponse(false)}>
+              <div
+                className="challenge-button pass hoss-button"
+                onMouseEnter={playHover}
+                onClick={() => {
+                  playClick();
+                  challengeResponse(false);
+                }}
+              >
                 <h3>Pass</h3>
               </div>
             </div>

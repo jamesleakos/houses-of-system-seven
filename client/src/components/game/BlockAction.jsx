@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import './styles/BlockAction.css';
 import Constants from '../../game_helpers/constants.js';
 
-const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
+const BlockAction = ({ myPlayer, blockAction, handleBlockResponse, playHover, playClick }) => {
   const parseAction = (ba) => {
     let addendum = '';
     if (ba.targetIndex > -1) {
@@ -47,7 +47,11 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
                 <div
                   className="block-button"
                   style={{ backgroundImage: `url('${Constants.Delegates[delegate].url}')`, gridColumn: twoCols ? (index % 2) + 1 : 1 }}
-                  onClick={() => handleBlockResponse({ blocking: true, delegate: delegate })}
+                  onClick={() => {
+                    playClick();
+                    handleBlockResponse({ blocking: true, delegate: delegate });
+                  }}
+                  onMouseEnter={playHover}
                   key={delegate}
                 >
                   <h3>{`Block with ${Constants.Delegates[delegate].display}`}</h3>
@@ -58,7 +62,11 @@ const BlockAction = ({ myPlayer, blockAction, handleBlockResponse }) => {
             <div
               className="block-button"
               style={{ backgroundImage: "url('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')" }}
-              onClick={() => handleBlockResponse({ blocking: false })}
+              onMouseEnter={playHover}
+              onClick={() => {
+                playClick();
+                handleBlockResponse({ blocking: false });
+              }}
             >
               <h3>Pass</h3>
             </div>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 // internal
 import './styles/ChooseAction.css';
 
-const ChooseAction = ({ myPlayer, takeAction }) => {
+const ChooseAction = ({ myPlayer, takeAction, playHover, playClick }) => {
   const getActionStatus = () => {
     return {
       income: myPlayer.money < 10,
@@ -25,6 +25,7 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
 
   const handleClick = (action) => {
     if (!actionsOpen[action]) return;
+    playClick();
     takeAction(action);
   };
 
@@ -40,8 +41,11 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
         <div
           className={'action ' + (actionsOpen.income ? 'open-action' : 'closed-action')}
           onClick={() => {
+            handleClick('income');
+          }}
+          onMouseEnter={() => {
             if (!actionsOpen.income) return;
-            takeAction('income');
+            playHover();
           }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coins_pd7OITMyg.png')
@@ -59,6 +63,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           onClick={() => {
             handleClick('foreign_aid');
           }}
+          onMouseEnter={() => {
+            if (!actionsOpen.foreign_aid) return;
+            playHover();
+          }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_bars_3c0GdRuRe.png')
           }}
@@ -74,6 +82,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           className={'action ' + (actionsOpen.coup ? 'open-action' : 'closed-action')}
           onClick={() => {
             handleClick('coup');
+          }}
+          onMouseEnter={() => {
+            if (!actionsOpen.coup) return;
+            playHover();
           }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/coupball_XTHjEFn6Y.png')
@@ -92,6 +104,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           className={'action ' + (actionsOpen.tax ? 'open-action' : 'closed-action')}
           onClick={() => {
             handleClick('tax');
+          }}
+          onMouseEnter={() => {
+            if (!actionsOpen.tax) return;
+            playHover();
           }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/gold_space_bars_9GnkSjJ0m.png')
@@ -113,6 +129,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           className={'action ' + (actionsOpen.assassinate ? 'open-action' : 'closed-action')}
           onClick={() => {
             handleClick('assassinate');
+          }}
+          onMouseEnter={() => {
+            if (!actionsOpen.assassinate) return;
+            playHover();
           }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/assassination_6Amkl7pf2.png')
@@ -136,6 +156,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           onClick={() => {
             handleClick('steal');
           }}
+          onMouseEnter={() => {
+            if (!actionsOpen.steal) return;
+            playHover();
+          }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/tax_e1IkDMQIE.png')
           }}
@@ -157,6 +181,10 @@ const ChooseAction = ({ myPlayer, takeAction }) => {
           className={'action ' + (actionsOpen.exchange ? 'open-action' : 'closed-action')}
           onClick={() => {
             handleClick('exchange');
+          }}
+          onMouseEnter={() => {
+            if (!actionsOpen.exchange) return;
+            playHover();
           }}
           style={{
             backgroundImage: formatImageLink('https://ik.imagekit.io/hfywj4j0a/HOSS_Images/spaceship_oLNUN7gI4.png')

@@ -3,13 +3,15 @@ import React from 'react';
 import RoomTilePlayerItem from './PlayerItem.jsx';
 import './styles/RoomTile.css';
 
-const RoomTile = ({ room, joinRoom }) => {
+const RoomTile = ({ room, joinRoom, playHover, playClick }) => {
   return (
     <div
-      className='room-tile'
+      className="room-tile"
       onClick={() => {
+        playClick();
         joinRoom(room.id);
       }}
+      onMouseEnter={playHover}
     >
       <h3>{room.name}</h3>
       {room.players.map((player) => {

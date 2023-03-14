@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import PlayerDelegate from './PlayerDelegate.jsx';
 import './styles/ChooseDelegate.css';
 
-const ChooseDelegate = ({ delegates, chooseDelegates, chooseNum, actionString }) => {
+const ChooseDelegate = ({ delegates, chooseDelegates, chooseNum, actionString, playHover, playClick }) => {
   const [chosenIndices, setChosenIndices] = React.useState([]);
 
   useEffect(() => {
@@ -35,6 +35,8 @@ const ChooseDelegate = ({ delegates, chooseDelegates, chooseNum, actionString })
               clickable={true}
               chosen={chosenIndices.includes(index)}
               style={{ gridColumn: (index % 2) + 1 }}
+              playHover={playHover}
+              playClick={playClick}
             />
           );
         })}

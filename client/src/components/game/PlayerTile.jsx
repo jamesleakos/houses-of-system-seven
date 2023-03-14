@@ -3,7 +3,7 @@ import React from 'react';
 // internal
 import './styles/PlayerTile.css';
 
-const PlayerTile = ({ player, isCurrentPlayer, choosableTarget, handleClick, isMobile, displayIndex }) => {
+const PlayerTile = ({ player, isCurrentPlayer, choosableTarget, handleClick, isMobile, displayIndex, playHover, playClick }) => {
   return (
     <div
       className={
@@ -15,7 +15,13 @@ const PlayerTile = ({ player, isCurrentPlayer, choosableTarget, handleClick, isM
       }
       onClick={() => {
         if (choosableTarget) {
+          playClick();
           handleClick(player.index);
+        }
+      }}
+      onMouseEnter={() => {
+        if (choosableTarget) {
+          playHover();
         }
       }}
       style={isMobile ? { gridColumn: (displayIndex % 2) + 1 } : {}}

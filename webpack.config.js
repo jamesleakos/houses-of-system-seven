@@ -7,7 +7,7 @@ module.exports = {
   entry: path.join(__dirname, '/client/src', 'index.jsx'),
   output: {
     path: path.join(__dirname, 'client/dist'),
-    filename: 'bundle.js',
+    filename: 'bundle.js'
   },
   module: {
     rules: [
@@ -17,28 +17,28 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-          },
-        },
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        }
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
+        test: /\.(png|svg|jpg|jpeg|gif|mp3)$/i,
+        type: 'asset/resource'
       },
       {
         test: /\.js$/,
         enforce: 'pre',
-        use: ['source-map-loader'],
-      },
-    ],
+        use: ['source-map-loader']
+      }
+    ]
   },
   plugins: [
     new SourceMapDevToolPlugin({
-      filename: '[file].map',
-    }),
-  ],
+      filename: '[file].map'
+    })
+  ]
 };

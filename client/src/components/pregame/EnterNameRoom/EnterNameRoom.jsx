@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 
 import './styles/EnterNameRoom.css';
 
-const EnterNameRoom = ({ setUsername, isMobile }) => {
+const EnterNameRoom = ({ setUsername, isMobile, playHover, playClick }) => {
   const [name, setName] = useState('');
 
   const handleClick = function () {
     setUsername(name);
     setName('');
+    playClick();
   };
 
   return (
@@ -27,7 +28,7 @@ const EnterNameRoom = ({ setUsername, isMobile }) => {
             setName(e.target.value);
           }}
         />
-        <input className="submit-button" type="button" value=">" onClick={handleClick} />
+        <input className="submit-button" type="button" value=">" onMouseEnter={playHover} onClick={handleClick} />
       </div>
     </div>
   );

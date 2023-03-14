@@ -15,7 +15,7 @@ import MobileLogModal from '../game/MobileLogModal.jsx';
 import './styles/Game.css';
 import './styles/MobileGame.css';
 
-const Game = ({ socket, setGameStarted, isMobile }) => {
+const Game = ({ socket, setGameStarted, isMobile, playHover, playClick }) => {
   const [players, setPlayers] = useState([]);
   const [currentStatusToText, setCurrentStatusToText] = useState('');
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
@@ -242,15 +242,48 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
     }
     switch (uiState) {
       case 'choose-action':
-        return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} />;
+        return <ChooseAction myPlayer={myPlayer} takeAction={takeAction} playHover={playHover} playClick={playClick} />;
       case 'block-action':
-        return <BlockAction myPlayer={myPlayer} blockAction={currentAttemptedAction} handleBlockResponse={blockResponse} />;
+        return (
+          <BlockAction
+            myPlayer={myPlayer}
+            blockAction={currentAttemptedAction}
+            handleBlockResponse={blockResponse}
+            playHover={playHover}
+            playClick={playClick}
+          />
+        );
       case 'challenge-action':
-        return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedAction} challengeResponse={challengeResponse} />;
+        return (
+          <ChallengeAction
+            myPlayer={myPlayer}
+            challengeAction={currentAttemptedAction}
+            challengeResponse={challengeResponse}
+            playHover={playHover}
+            playClick={playClick}
+          />
+        );
       case 'block-challenge-action':
-        return <ChallengeAction myPlayer={myPlayer} challengeAction={currentAttemptedBlock} challengeResponse={challengeBlock} />;
+        return (
+          <ChallengeAction
+            myPlayer={myPlayer}
+            challengeAction={currentAttemptedBlock}
+            challengeResponse={challengeBlock}
+            playHover={playHover}
+            playClick={playClick}
+          />
+        );
       case 'discard-delegate':
-        return <ChooseDelegate delegates={myPlayer.delegates} chooseDelegates={discardDelegate} chooseNum={1} actionString={'discard'} />;
+        return (
+          <ChooseDelegate
+            delegates={myPlayer.delegates}
+            chooseDelegates={discardDelegate}
+            chooseNum={1}
+            actionString={'discard'}
+            playHover={playHover}
+            playClick={playClick}
+          />
+        );
       case 'exchange-delegates':
         return (
           <ChooseDelegate
@@ -258,6 +291,8 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
             chooseDelegates={exhangeDelegates}
             chooseNum={myPlayer.delegates.length}
             actionString={'keep'}
+            playHover={playHover}
+            playClick={playClick}
           />
         );
       case 'choose-target':
@@ -292,6 +327,8 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
           handleClick={chooseTarget}
           isMobile={isMobile}
           displayIndex={displayIndex}
+          playHover={playHover}
+          playClick={playClick}
         />
       );
     }
@@ -335,7 +372,11 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
           <div
             className="hoss-button"
             style={{ color: 'black', position: 'fixed', bottom: '10px', left: '10px' }}
-            onClick={() => setRulesOn(true)}
+            onClick={() => {
+              setRulesOn(true);
+              playClick();
+            }}
+            onMouseEnter={() => playHover()}
           >
             VIEW GUIDE
           </div>
@@ -385,7 +426,10 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
           <div
             className="hoss-button"
             style={{ color: 'black', position: 'fixed', bottom: '10px', left: '10px' }}
-            onClick={() => setRulesOn(true)}
+            onClick={() => {
+              setRulesOn(true);
+              playClick();
+            }}
           >
             VIEW GUIDE
           </div>
@@ -397,7 +441,10 @@ const Game = ({ socket, setGameStarted, isMobile }) => {
           <div
             className="hoss-button"
             style={{ color: 'black', position: 'fixed', bottom: '10px', right: '10px' }}
-            onClick={() => setLogOn(true)}
+            onClick={() => {
+              setLogOn(true);
+              playClick();
+            }}
           >
             VIEW LOG
           </div>
