@@ -2,33 +2,33 @@
 const roomMan = require('../managers/roomManager.js');
 const gameMan = require('../managers/gameManager.js');
 
-module.exports = (io, player) => {
+module.exports = (io, playerSocket) => {
   const createNewRoom = (data) => {
-    const room = roomMan.createNewRoomAddPlayer(data.roomname, data.username, player, io);
+    const room = roomMan.createNewRoomAddPlayer(data.roomname, data.username, playerSocket, io);
 
-    player.emit('you-joined-room', room.id);
+    playerSocket.emit('you-joined-room', room.id);
     io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const joinRoom = (data) => {
     const room = roomMan.getRoom(data.room_id);
-    roomMan.addPlayerToRoom(room, data.username, player);
+    roomMan.addPlayerToRoom(room, data.username, playerSocket);
 
-    player.emit('you-joined-room', room.id);
+    playerSocket.emit('you-joined-room', room.id);
     io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const leaveRoom = () => {
-    roomMan.removePlayerFromTrackedRoom(player);
+    roomMan.removePlayerFromTrackedRoom(playerSocket);
 
-    player.emit('you-left-room');
+    playerSocket.emit('you-left-room');
     io.emit('rooms-update', roomMan.getOpenRooms());
   };
 
   const startGame = (data) => {
     const room = roomMan.getRoom(data.room_id);
     // make sure this is a player actually in the room!
-    if (!room.players.find((p) => p.id === player.id)) return;
+    if (!room.players.find((p) => p.id === playerSocket.id)) return;
 
     gameMan.startGame(room, io);
 
@@ -36,16 +36,16 @@ module.exports = (io, player) => {
   };
 
   const playerDisconnected = () => {
-    roomMan.removePlayerFromTrackedRoom(player);
+    roomMan.removePlayerFromTrackedRoom(playerSocket);
   };
 
   // on join, this will be sent
   io.emit('rooms-update', roomMan.getOpenRooms());
 
   // and these will be assigned
-  player.on('request-new-room', createNewRoom);
-  player.on('request-join-room', joinRoom);
-  player.on('request-leave-room', leaveRoom);
-  player.on('request-start-game', startGame);
-  player.on('disconnect', playerDisconnected);
+  playerSocket.on('request-new-room', createNewRoom);
+  playerSocket.on('request-join-room', joinRoom);
+  playerSocket.on('request-leave-room', leaveRoom);
+  playerSocket.on('request-start-game', startGame);
+  playerSocket.on('disconnect', playerDisconnected);
 };

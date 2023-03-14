@@ -1,87 +1,104 @@
 const { v4: uuidv4 } = require('uuid');
 const Tracking = require('../db/controllers/tracking.js');
 
-// objs
-let rooms = [];
-const playerToRoom = {};
+class Player {
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
+  }
+}
 
-const getRoom = (roomID) => {
-  return rooms.find((r) => r.id === roomID);
-};
+class Room {
+  constructor(name) {
+    this.id = uuidv4();
+    this.name = name;
+    this.players = [];
+    this.started = false;
+  }
 
-const getOpenRooms = () => {
-  return rooms.filter((room) => {
-    return !room.started && !room.game;
-  });
-};
+  addPlayer(player) {
+    if (this.players.find((p) => p.id === player.id)) return;
+    this.players.push(player);
+  }
 
-const createRoom = (roomname, io) => {
-  // make sure to cleanup
-  cleanupEmptyRooms();
+  removePlayer(playerId) {
+    this.players = this.players.filter((p) => p.id !== playerId);
+  }
+}
 
-  const newRoom = {
-    id: uuidv4(),
-    name: roomname,
-    players: [],
-    started: false
-  };
+class RoomManager {
+  constructor() {
+    this.rooms = [];
+    this.playerToRoom = {};
+  }
 
-  rooms.push(newRoom);
-  return newRoom;
-};
+  getRoom(roomID) {
+    return this.rooms.find((r) => r.id === roomID);
+  }
 
-const addPlayerToRoom = (room, username, playerSocket) => {
-  // track that we added a new player
-  Tracking.addUser(username.slice(0, 10));
+  getOpenRooms() {
+    return this.rooms.filter((room) => {
+      return !room.started && !room.game;
+    });
+  }
 
-  // don't let a player join a room they're already in
-  if (room.players.find((p) => p.id === playerSocket.id)) return;
+  createRoom(roomname) {
+    // make sure to cleanup
+    this.cleanupEmptyRooms();
 
-  // remove from an old rooms they might be in
-  removePlayerFromTrackedRoom(playerSocket);
+    const newRoom = new Room(roomname);
+    this.rooms.push(newRoom);
+    return newRoom;
+  }
 
-  // add to io namespace
-  playerSocket.join(room.id);
+  addPlayerToRoom(room, username, playerSocket) {
+    // track that we added a new player
+    Tracking.addUser(username.slice(0, 10));
 
-  // add to new room
-  room.players.push({
-    id: playerSocket.id,
-    name: username.slice(0, 10)
-  });
-  playerToRoom[playerSocket.id] = room;
-};
+    // don't let a player join a room they're already in
+    if (room.players.find((p) => p.id === playerSocket.id)) return;
 
-const removePlayerFromRoom = (room, playerSocket) => {
-  // remove from room
-  room.players = room.players.filter((p) => p.id !== playerSocket.id);
-  // remove from playerToRoom tracker
-  delete playerToRoom[playerSocket.id];
-  //unsub from room messages
-  playerSocket.leave(room.id);
+    // remove from an old rooms they might be in
+    this.removePlayerFromTrackedRoom(playerSocket);
 
-  // make sure to cleanup
-  cleanupEmptyRooms();
-};
+    // add to io namespace
+    playerSocket.join(room.id);
 
-const removePlayerFromTrackedRoom = (playerSocket) => {
-  const oldRoom = playerToRoom[playerSocket.id];
-  if (oldRoom) removePlayerFromRoom(oldRoom, playerSocket);
-};
+    // add to new room
+    room.addPlayer(new Player(playerSocket.id, username.slice(0, 10)));
 
-const cleanupEmptyRooms = () => {
-  rooms = rooms.filter((r) => r.players.length > 0);
-};
+    this.playerToRoom[playerSocket.id] = room;
+  }
 
-// new room on player request, player gets added
-const createNewRoomAddPlayer = (roomname, username, playerSocket, io) => {
-  // create room
-  const room = createRoom(roomname, io);
-  addPlayerToRoom(room, username, playerSocket);
-  return room;
-};
+  removePlayerFromRoom(room, playerSocket) {
+    // remove from room
+    room.removePlayer(playerSocket.id);
+    // remove from playerToRoom tracker
+    delete this.playerToRoom[playerSocket.id];
+    //unsub from room messages
+    playerSocket.leave(room.id);
 
-module.exports.getRoom = getRoom;
-module.exports.getOpenRooms = getOpenRooms;
-module.exports.addPlayerToRoom = addPlayerToRoom;
-module.exports.createNewRoomAddPlayer = createNewRoomAddPlayer;
-module.exports.removePlayerFromTrackedRoom = removePlayerFromTrackedRoom;
+    // make sure to cleanup
+    this.cleanupEmptyRooms();
+  }
+
+  removePlayerFromTrackedRoom(playerSocket) {
+    const oldRoom = this.playerToRoom[playerSocket.id];
+    if (oldRoom) this.removePlayerFromRoom(oldRoom, playerSocket);
+  }
+
+  cleanupEmptyRooms() {
+    this.rooms = this.rooms.filter((r) => r.players.length > 0);
+  }
+
+  // new room on player request, player gets added
+  createNewRoomAddPlayer(roomname, username, playerSocket) {
+    // create room
+    const room = this.createRoom(roomname);
+    this.addPlayerToRoom(room, username, playerSocket);
+    return room;
+  }
+}
+
+const roomMan = new RoomManager();
+module.exports = roomMan;
